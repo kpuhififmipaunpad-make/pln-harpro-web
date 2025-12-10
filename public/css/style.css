@@ -121,7 +121,7 @@ body {
 /* Hero Section - Asymmetric Modern Layout */
 .hero {
   position: relative;
-  min-height: 90vh;
+  min-height: 70vh;
   background: linear-gradient(135deg, #005685 0%, #00A2B9 50%, #00AFF0 100%);
   overflow: hidden;
   padding: 0;
@@ -158,10 +158,10 @@ body {
   position: relative;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 6rem 3rem 8rem;
+  padding: 4rem 3rem 6rem;
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: 4rem;
+  gap: 3rem;
   align-items: center;
   z-index: 1;
 }
@@ -178,11 +178,11 @@ body {
   background: rgba(255, 209, 0, 0.2);
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 209, 0, 0.4);
-  padding: 0.8rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 50px;
   font-weight: 600;
-  font-size: 0.95rem;
-  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
   box-shadow: 0 4px 15px rgba(255, 209, 0, 0.3);
 }
 
@@ -197,10 +197,10 @@ body {
 }
 
 .hero-title {
-  font-size: 3.5rem;
+  font-size: 2.8rem;
   font-weight: 800;
   line-height: 1.2;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
   letter-spacing: -0.5px;
 }
@@ -224,19 +224,19 @@ body {
 }
 
 .hero-description {
-  font-size: 1.15rem;
-  line-height: 1.8;
+  font-size: 1.05rem;
+  line-height: 1.7;
   opacity: 0.95;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   max-width: 600px;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .hero-stats {
   display: flex;
-  gap: 3rem;
-  margin-bottom: 2.5rem;
-  padding: 2rem 0;
+  gap: 2.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -246,7 +246,7 @@ body {
 }
 
 .stat-number {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 800;
   color: var(--pln-yellow);
   margin-bottom: 0.3rem;
@@ -254,7 +254,7 @@ body {
 }
 
 .stat-label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   opacity: 0.9;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -269,10 +269,10 @@ body {
 
 .btn-primary,
 .btn-secondary {
-  padding: 1.1rem 2.5rem;
+  padding: 1rem 2.2rem;
   border-radius: 12px;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1rem;
   text-decoration: none;
   transition: all 0.3s ease;
   display: inline-flex;
@@ -309,7 +309,7 @@ body {
 .hero-right {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.2rem;
 }
 
 .hero-card {
@@ -317,7 +317,7 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 20px;
-  padding: 2rem;
+  padding: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   transition: all 0.4s ease;
@@ -331,21 +331,21 @@ body {
 }
 
 .hero-card .card-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  font-size: 2.2rem;
+  margin-bottom: 0.8rem;
 }
 
 .hero-card h3 {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: white;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .hero-card p {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.6;
 }
 
@@ -363,7 +363,7 @@ body {
   position: relative;
   display: block;
   width: calc(100% + 1.3px);
-  height: 120px;
+  height: 80px;
 }
 
 /* Container - Now White Background */
@@ -834,13 +834,19 @@ body {
 
 /* Responsive */
 @media (max-width: 1024px) {
+
+  .hero {
+  min-height: 60vh;  
+  }
+  
   .hero-content-wrapper {
     grid-template-columns: 1fr;
     gap: 3rem;
+    padding: 3rem 2rem 4rem;
   }
   
   .hero-title {
-    font-size: 2.8rem;
+    font-size: 2.3rem;
   }
   
   .activity-container {
@@ -849,7 +855,15 @@ body {
 }
 
 @media (max-width: 768px) {
-  .personnel-grid {
+  .hero {
+    min-height: auto;  
+  }
+  
+  .hero-content-wrapper {
+    padding: 2.5rem 1.5rem 3rem;  
+  }
+  
+    .personnel-grid {
     grid-template-columns: 1fr;
   }
   
@@ -861,11 +875,12 @@ body {
   }
   
   .hero-title {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
   }
   
   .hero-stats {
     gap: 1.5rem;
+    flex-wrap: wrap;
   }
   
   .calendar-grid {
