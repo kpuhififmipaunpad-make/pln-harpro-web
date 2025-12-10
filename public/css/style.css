@@ -182,7 +182,8 @@ body {
   border-radius: 50px;
   font-weight: 600;
   font-size: 0.85rem;
-  margin-bottom: 0.55rem;
+  margin-top: 0.1rem;
+  margin-bottom: 0.65rem;
   box-shadow: 0 4px 15px rgba(255, 209, 0, 0.3);
 }
 
