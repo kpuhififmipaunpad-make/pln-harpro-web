@@ -11,12 +11,15 @@ const PORT = process.env.PORT || 3000;
 // Database Connection
 mongoose.connect(process.env.DATABASE_URL)
   .then(() => console.log('✓ MongoDB Connected - PLN HarPro Database'))
-  .catch(err => console.error('MongoDB Error:', err));
+  .catch(err => {
+    console.error('MongoDB Error:', err);
+    process.exit(1);
+  });
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));  // ⚠️ INI HARUS ADA!
 app.use(methodOverride('_method'));
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
