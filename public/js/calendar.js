@@ -1,4 +1,7 @@
-// Calendar functionality dengan form integration
+// Ambil data activities dari window object
+const activitiesData = window.activitiesData || [];
+
+// Calendar functionality
 let currentDate = new Date();
 let selectedDate = null;
 

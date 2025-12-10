@@ -19,13 +19,13 @@ mongoose.connect(process.env.DATABASE_URL)
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));  // ⚠️ INI HARUS ADA!
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
-// EJS Setup
+// EJS Setup (WITHOUT LAYOUTS)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
