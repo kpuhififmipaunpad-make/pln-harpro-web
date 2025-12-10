@@ -121,7 +121,7 @@ body {
 /* Hero Section - Asymmetric Modern Layout */
 .hero {
   position: relative;
-  min-height: 65vh;
+  min-height: 55vh;
   background: linear-gradient(135deg, #005685 0%, #00A2B9 50%, #00AFF0 100%);
   overflow: hidden;
   padding: 0;
@@ -156,9 +156,9 @@ body {
 
 .hero-content-wrapper {
   position: relative;
-  max-width: 1300px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 3rem 5rem;
+  padding: 2.5rem 3rem 4rem;
   display: grid;
   grid-template-columns: 1.3fr 1fr;
   gap: 2.5rem;
@@ -197,7 +197,7 @@ body {
 }
 
 .hero-title {
-  font-size: 2.4rem;
+  font-size: 2.1rem;
   font-weight: 800;
   line-height: 1.15;
   margin-bottom: 1.rem;
@@ -886,7 +886,6 @@ body {
   }
 
 }
-
 
 
 @media (max-width: 768px) {
