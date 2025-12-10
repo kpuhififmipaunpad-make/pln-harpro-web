@@ -361,6 +361,7 @@ body {
   width: 100%;
   overflow: hidden;
   line-height: 0;
+  filter: drop-shadow(0 -5px 20px rgba(0, 86, 133, 0.1));
 }
 
 .hero-wave svg {
@@ -402,18 +403,16 @@ body {
 }
 
 /* Personnel Section - White Background */
-/* Personnel Section - Smooth Transition */
 .personnel-section {
   background: linear-gradient(to bottom, 
-    rgba(240, 248, 255, 0) 0%,      /* Transparan di atas */
-    rgba(245, 250, 255, 0.3) 15%,   /* Mulai muncul */
-    rgba(248, 252, 255, 0.6) 30%,   /* Semakin putih */
-    rgba(255, 255, 255, 0.85) 50%,  /* Hampir putih */
-    rgb(255, 255, 255) 70%          /* Full putih */
+    #f0f8ff 0%,      /* Light blue */
+    #f5faff 5%,
+    #fafcff 10%,
+    #fcfdff 15%,
+    #ffffff 20%      /* Pure white */
   );
-  padding: 3rem 0 5rem;  /* 👈 Tambah padding atas untuk space gradient */
+  padding: 5rem 0;
   position: relative;
-  margin-top: -60px;  /* 👈 Overlap dengan wave */
 }
 
 
