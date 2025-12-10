@@ -1,32 +1,43 @@
 const mongoose = require('mongoose');
 
 const activitySchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
   date: {
     type: Date,
-    required: true
+    required: true,
+    index: true
   },
-  category: {
+  gi: {
     type: String,
-    enum: ['Proteksi', 'Metering', 'Otomasi', 'Pemeliharaan', 'Lainnya'],
-    default: 'Pemeliharaan'
+    required: true,
+    enum: ['GI Cimahi', 'GI Cililin', 'GI Lembang', 'GI Batujajar', 'GI Padalarang', 'GI Cisarua']
   },
-  status: {
+  workTypes: [{
     type: String,
-    enum: ['Terjadwal', 'Sedang Berjalan', 'Selesai'],
-    default: 'Terjadwal'
+    enum: ['Rutin', 'Non Rutin', 'Pihak Lain', 'Libur Nasional']
+  }],
+  personnel: [{
+    type: String,
+    enum: ['Restu', 'Ara', 'Refo', 'Yudi']
+  }],
+  description: {
+    type: String,
+    default: ''
+  },
+  notes: {
+    type: String,
+    default: ''
   },
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
 });
+
+// Compound index untuk query cepat
+activitySchema.index({ date: 1, gi: 1 });
 
 module.exports = mongoose.model('Activity', activitySchema);

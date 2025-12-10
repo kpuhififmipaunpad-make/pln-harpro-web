@@ -34,44 +34,44 @@
         <div class="personnel-card level-1">
           <div class="card-inner">
             <div class="photo-wrapper">
-              <img src="https://ui-avatars.com/api/?background=035B71&color=fff&size=200&name=Koordinator" alt="Koordinator">
+              <img src="https://ui-avatars.com/api/?background=035B71&color=fff&size=200&name=Restu" alt="Restu">
             </div>
             <div class="personnel-info">
-              <h3>Koordinator HarPro</h3>
-              <p class="position">Koordinator Tim</p>
+              <h3>Restu</h3>
+              <p class="position">Koordinator HarPro</p>
             </div>
           </div>
         </div>
         <div class="personnel-card level-2">
           <div class="card-inner">
             <div class="photo-wrapper">
-              <img src="https://ui-avatars.com/api/?background=00A2B9&color=fff&size=200&name=Teknisi+1" alt="Teknisi 1">
+              <img src="https://ui-avatars.com/api/?background=00A2B9&color=fff&size=200&name=Ara" alt="Ara">
             </div>
             <div class="personnel-info">
-              <h3>Teknisi Proteksi</h3>
-              <p class="position">Specialist Proteksi</p>
+              <h3>Ara</h3>
+              <p class="position">Teknisi Proteksi</p>
             </div>
           </div>
         </div>
         <div class="personnel-card level-3">
           <div class="card-inner">
             <div class="photo-wrapper">
-              <img src="https://ui-avatars.com/api/?background=00A2B9&color=fff&size=200&name=Teknisi+2" alt="Teknisi 2">
+              <img src="https://ui-avatars.com/api/?background=00A2B9&color=fff&size=200&name=Refo" alt="Refo">
             </div>
             <div class="personnel-info">
-              <h3>Teknisi Metering</h3>
-              <p class="position">Specialist Metering</p>
+              <h3>Refo</h3>
+              <p class="position">Teknisi Metering</p>
             </div>
           </div>
         </div>
         <div class="personnel-card level-3">
           <div class="card-inner">
             <div class="photo-wrapper">
-              <img src="https://ui-avatars.com/api/?background=00A2B9&color=fff&size=200&name=Teknisi+3" alt="Teknisi 3">
+              <img src="https://ui-avatars.com/api/?background=00A2B9&color=fff&size=200&name=Yudi" alt="Yudi">
             </div>
             <div class="personnel-info">
-              <h3>Teknisi Otomasi</h3>
-              <p class="position">Specialist Otomasi</p>
+              <h3>Yudi</h3>
+              <p class="position">Teknisi Otomasi</p>
             </div>
           </div>
         </div>
@@ -97,15 +97,111 @@
       </div>
     </div>
 
-    <div class="activity-details" id="activityDetails">
-      <h3>Detail Kegiatan</h3>
-      <p class="no-activity">Pilih tanggal untuk melihat kegiatan</p>
-      <div id="activityList"></div>
+    <!-- Activity Form & Details -->
+    <div class="activity-container">
+      <!-- Form Input Activity -->
+      <div class="activity-form" id="activityForm">
+        <h3>Input Agenda Kegiatan</h3>
+        <form id="scheduleForm">
+          <input type="hidden" id="selectedDate" name="date">
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tanggal Terpilih:</label>
+              <div id="selectedDateDisplay" class="selected-date-display">Pilih tanggal</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="gi">Lokasi GI:</label>
+              <select id="gi" name="gi" required>
+                <option value="">-- Pilih GI --</option>
+                <option value="GI Cimahi">GI Cimahi</option>
+                <option value="GI Cililin">GI Cililin</option>
+                <option value="GI Lembang">GI Lembang</option>
+                <option value="GI Batujajar">GI Batujajar</option>
+                <option value="GI Padalarang">GI Padalarang</option>
+                <option value="GI Cisarua">GI Cisarua</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Jenis Pekerjaan:</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" name="workTypes" value="Rutin">
+                <span>Rutin</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="workTypes" value="Non Rutin">
+                <span>Non Rutin</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="workTypes" value="Pihak Lain">
+                <span>Pihak Lain</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="workTypes" value="Libur Nasional">
+                <span>Libur Nasional</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Personel:</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" name="personnel" value="Restu">
+                <span>Restu</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="personnel" value="Ara">
+                <span>Ara</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="personnel" value="Refo">
+                <span>Refo</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="personnel" value="Yudi">
+                <span>Yudi</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Deskripsi Kegiatan:</label>
+            <textarea id="description" name="description" rows="3" placeholder="Contoh: Pemeliharaan trafo..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Catatan:</label>
+            <textarea id="notes" name="notes" rows="2" placeholder="Catatan tambahan..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit">Simpan Agenda</button>
+        </form>
+      </div>
+
+      <!-- Display Activities -->
+      <div class="activity-details" id="activityDetails">
+        <h3>Agenda Kegiatan</h3>
+        <p class="no-activity">Pilih tanggal untuk melihat atau input agenda</p>
+        <div id="activityList"></div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- Pass activities data to JavaScript -->
 <script>
-  const activitiesData = <%- JSON.stringify(activities) %>;
+  try {
+    const activitiesData = JSON.parse('<%- JSON.stringify(activities || []) %>');
+  } catch(e) {
+    console.error('Parse error:', e);
+    const activitiesData = [];
+  }
 </script>
+
