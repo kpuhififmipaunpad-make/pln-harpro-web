@@ -121,7 +121,7 @@ body {
 /* Hero Section - Asymmetric Modern Layout */
 .hero {
   position: relative;
-  min-height: 70vh;
+  min-height: 65vh;
   background: linear-gradient(135deg, #005685 0%, #00A2B9 50%, #00AFF0 100%);
   overflow: hidden;
   padding: 0;
@@ -133,7 +133,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('/images/ultg.jpg') center/cover no-repeat;
+  background: url('/images/ultg.jpg') center 30% no-repeat;
   opacity: 0.15;
   filter: blur(1px);
 }
@@ -156,12 +156,12 @@ body {
 
 .hero-content-wrapper {
   position: relative;
-  max-width: 1400px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 4rem 3rem 6rem;
+  padding: 3rem 3rem 5rem;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 3rem;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 2.5rem;
   align-items: center;
   z-index: 1;
 }
@@ -174,20 +174,20 @@ body {
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.6rem;
   background: rgba(255, 209, 0, 0.2);
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 209, 0, 0.4);
-  padding: 0.6rem 1.2rem;
+  padding: 0.5rem 1rem;
   border-radius: 50px;
   font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  margin-bottom: 1.2rem;
   box-shadow: 0 4px 15px rgba(255, 209, 0, 0.3);
 }
 
 .badge-icon {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   animation: sparkle 2s ease-in-out infinite;
 }
 
@@ -197,10 +197,10 @@ body {
 }
 
 .hero-title {
-  font-size: 2.8rem;
+  font-size: 2.4rem;
   font-weight: 800;
-  line-height: 1.2;
-  margin-bottom: 1.2rem;
+  line-height: 1.15;
+  margin-bottom: 1.rem;
   text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
   letter-spacing: -0.5px;
 }
@@ -214,65 +214,67 @@ body {
 .hero-title .highlight::after {
   content: '';
   position: absolute;
-  bottom: 5px;
+  bottom: 3px;
   left: 0;
   width: 100%;
-  height: 12px;
+  height: 10px;
   background: rgba(255, 209, 0, 0.3);
   z-index: -1;
   border-radius: 4px;
 }
 
 .hero-description {
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: 0.98rem;
+  line-height: 1.65;
   opacity: 0.95;
-  margin-bottom: 2rem;
-  max-width: 600px;
+  margin-bottom: 1.5rem;
+  max-width: 580px;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .hero-stats {
   display: flex;
-  gap: 2.5rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem 0;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 1.2rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .stat-item {
   text-align: left;
+  flex: 1;
 }
 
 .stat-number {
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 800;
   color: var(--pln-yellow);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .stat-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   opacity: 0.9;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   font-weight: 600;
+  line-height: 1.3;
 }
 
 .hero-cta {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.2rem;
   flex-wrap: wrap;
 }
 
 .btn-primary,
 .btn-secondary {
-  padding: 1rem 2.2rem;
+  padding: 1rem 2rem;
   border-radius: 12px;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.95rem;
   text-decoration: none;
   transition: all 0.3s ease;
   display: inline-flex;
@@ -309,15 +311,15 @@ body {
 .hero-right {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1rem;
 }
 
 .hero-card {
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 1.5rem;
+  border-radius: 18px;
+  padding: 1.3rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   transition: all 0.4s ease;
@@ -331,22 +333,23 @@ body {
 }
 
 .hero-card .card-icon {
-  font-size: 2.2rem;
-  margin-bottom: 0.8rem;
+  font-size: 2rem;
+  margin-bottom: 0.6rem;
 }
 
 .hero-card h3 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: white;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.3rem;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  line-height: 1.3;
 }
 
 .hero-card p {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 0.85rem;
+  line-height: 1.5;
 }
 
 /* Wave Transition to White */
@@ -363,7 +366,7 @@ body {
   position: relative;
   display: block;
   width: calc(100% + 1.3px);
-  height: 80px;
+  height: 60px;
 }
 
 /* Container - Now White Background */
@@ -833,6 +836,22 @@ body {
 }
 
 /* Responsive */
+
+@media (max-width: 1200px) {
+  .hero-content-wrapper {
+    max-width: 100%;
+    padding: 3rem 2rem 4.5rem;
+  }
+  
+  .hero-title {
+    font-size: 2.1rem;
+  }
+  
+  .hero-stats {
+    gap: 1.5rem;
+  }
+}
+
 @media (max-width: 1024px) {
 
   .hero {
@@ -852,7 +871,23 @@ body {
   .activity-container {
     grid-template-columns: 1fr;
   }
+
+  .hero-description {
+    font-size: 0.95rem;
+    max-width: 100%;
+  }
+  
+  .hero-stats {
+    gap: 1.5rem;
+  }
+  
+  .stat-number {
+    font-size: 1.8rem;
+  }
+
 }
+
+
 
 @media (max-width: 768px) {
   .hero {
