@@ -415,7 +415,7 @@ body {
 /* Personnel Section - Simple, no overlay needed */
 .personnel-section {
   background: white;
-  padding: 3rem 0 2rem;
+  padding: 3rem 0 0;
   position: relative;
 }
 
@@ -503,7 +503,7 @@ body {
 /* Calendar Section */
 .calendar-section {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  padding: 2rem 0 3rem;
+  padding: 1rem 0 3rem;
   position: relative;
   z-index: 1;  
 }
