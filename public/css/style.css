@@ -819,6 +819,17 @@ body {
   border-left: 5px solid #ec4899;
 }
 
+/* efek kartu ketika selected */
+.checkbox-label.is-checked {
+  background: #e0f2ff;
+  border-color: var(--pln-blue-light);
+}
+
+.checkbox-label.is-checked span {
+  color: var(--pln-blue-dark);
+  font-weight: 700;
+}
+
 
 .btn-submit {
   width: 100%;

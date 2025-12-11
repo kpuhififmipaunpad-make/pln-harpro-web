@@ -336,4 +336,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   console.log('🚀 Calendar initializing...');
   await loadActivities();
   renderCalendar();
+
+  // === SYNC CHECKBOX STATE DENGAN CLASS .is-checked ===
+  document.querySelectorAll('.checkbox-label input[type="checkbox"]').forEach(input => {
+    const label = input.closest('.checkbox-label');
+
+    // state awal
+    if (input.checked) {
+      label.classList.add('is-checked');
+    }
+
+    input.addEventListener('change', () => {
+      if (input.checked) {
+        label.classList.add('is-checked');
+      } else {
+        label.classList.remove('is-checked');
+      }
+    });
+  });
 });
+
