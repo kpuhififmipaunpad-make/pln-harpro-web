@@ -515,7 +515,7 @@ body {
   box-shadow: 0 10px 40px rgba(0, 86, 133, 0.1);
   border: 2px solid rgba(0, 162, 185, 0.1);
   margin-bottom: 2rem;
-    max-width: 900px;  
+    max-width: 700px;  
   margin-left: auto;  
   margin-right: auto;  
 }
@@ -559,7 +559,7 @@ body {
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.2rem;
+  gap: 0.1rem;
 }
 
 .calendar-day {
@@ -568,7 +568,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem;
+  padding: 0.15rem;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -577,7 +577,7 @@ body {
   border: 2px solid transparent;
   color: var(--text-dark);
   font-weight: 600;
-  font-size: 0.65rem;
+  font-size: 0.5rem;
 }
 
 .calendar-day.header {
