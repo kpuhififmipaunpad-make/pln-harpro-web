@@ -394,7 +394,7 @@ body {
   color: var(--pln-blue-dark);
   text-align: center;
   margin-bottom: 3rem;
-  margin-top: 01rem;
+  margin-top: 1rem;
   position: relative;
   padding-bottom: 1.2rem;
 }
@@ -415,7 +415,7 @@ body {
 /* Personnel Section - Simple, no overlay needed */
 .personnel-section {
   background: white;
-  padding: 3rem 0 2rem;
+  padding: 3rem 0 3rem;
   position: relative;
 }
 
