@@ -29,17 +29,19 @@ async function loadActivities() {
   try {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    const startOfMonth = new Date(year, month, 1).toISOString().split('T')[0];
-    
-    const response = await fetch(`/api/activities/month/${startOfMonth}`);
-    if (response.ok) {
-      activitiesData = await response.json();
-      console.log('🔄 Loaded activities:', activitiesData.length);
-    }
+    const startOfMonth = `${year}-${String(month + 1).padStart(2,'0')}-01`;
+
+    const res = await fetch(`/api/activities/month/${startOfMonth}`);
+    const data = await res.json();
+
+    console.log('🔄 API month data:', data);   // debug
+    activitiesData = data || [];
+    console.log('📊 activitiesData length:', activitiesData.length);
   } catch (err) {
     console.error('Error loading activities:', err);
   }
 }
+
 
 function renderCalendar() {
   const year = currentDate.getFullYear();
