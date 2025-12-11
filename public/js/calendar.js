@@ -117,15 +117,25 @@ function selectDate(date, element) {
 }
 
 function showActivitiesForDate(date) {
-  const dateStr = date.toISOString().split('T')[0];
+  // ✅ FIX: Gunakan local date (bukan UTC)
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const dateStr = `${year}-${month}-${day}`;
   
   console.log('🔍 Looking for activities on:', dateStr);
   console.log('📊 Total activities loaded:', activitiesData.length);
   console.log('📋 Activities data:', activitiesData);
   
   const activities = activitiesData.filter(activity => {
-    const activityDate = new Date(activity.date).toISOString().split('T')[0];
-    console.log('  Comparing:', activityDate, 'with', dateStr, '=', activityDate === dateStr);
+    // ✅ FIX: Parse date dari database (tanpa timezone issue)
+    const actDate = new Date(activity.date);
+    const actYear = actDate.getFullYear();
+    const actMonth = String(actDate.getMonth() + 1).padStart(2, '0');
+    const actDay = String(actDate.getDate()).padStart(2, '0');
+    const activityDate = `${actYear}-${actMonth}-${actDay}`;
+    
+    console.log('  Comparing:', activityDate, '===', dateStr, '→', activityDate === dateStr);
     return activityDate === dateStr;
   });
   
@@ -159,6 +169,7 @@ function showActivitiesForDate(date) {
     `).join('');
   }
 }
+
 
 
 // ✅ Form submission dengan REFRESH
