@@ -37,6 +37,8 @@ app.use((req, res) => {
   res.status(404).send('Halaman tidak ditemukan');
 });
 
+app.use(express.static('public'));
+
 // Start Server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 PLN HarPro Server running on port ${PORT}`);
