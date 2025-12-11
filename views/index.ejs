@@ -284,11 +284,11 @@
     </div>
   </footer>
 
-<script>
-  // ✅ PASS DATA dari server ke frontend
-  window.activitiesData = <%- JSON.stringify(activities || []) %>;
-  console.log('📊 Loaded activities from server:', window.activitiesData.length);
-</script>
+  <!-- Pass activities data to JavaScript -->
+  <script>
+    // ✅ PASS DATA dari server ke frontend
+    window.activitiesData = <%- JSON.stringify(activities) %>;
+  </script>
 
 
 
