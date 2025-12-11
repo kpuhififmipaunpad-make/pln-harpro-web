@@ -1,5 +1,5 @@
-// Ambil data activities dari window object
-const activitiesData = window.activitiesData || [];
+// Ambil data activities dari window object (initial load)
+let activitiesData = window.activitiesData || [];
 
 // Calendar functionality
 let currentDate = new Date();
@@ -11,6 +11,23 @@ const monthNames = [
 ];
 
 const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+
+// ✅ LOAD ACTIVITIES dari server (AJAX)
+async function loadActivities() {
+  try {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const startOfMonth = new Date(year, month, 1).toISOString().split('T')[0];
+    
+    // Load all activities for current month
+    const response = await fetch(`/api/activities/month/${startOfMonth}`);
+    if (response.ok) {
+      activitiesData = await response.json();
+    }
+  } catch (err) {
+    console.error('Error loading activities:', err);
+  }
+}
 
 function renderCalendar() {
   const year = currentDate.getFullYear();
@@ -135,7 +152,7 @@ function showActivitiesForDate(date) {
   }
 }
 
-// Form submission
+// ✅ Form submission dengan REFRESH
 document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   
@@ -186,10 +203,22 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
     });
     
     if (response.ok) {
-      alert('Agenda berhasil disimpan!');
-      location.reload();
+      alert('✅ Agenda berhasil disimpan!');
+      
+      // ✅ REFRESH data tanpa reload page
+      await loadActivities();
+      renderCalendar();
+      
+      // Reset form
+      e.target.reset();
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      
+      // Show updated activities
+      if (selectedDate) {
+        showActivitiesForDate(selectedDate);
+      }
     } else {
-      alert('Gagal menyimpan agenda!');
+      alert('❌ Gagal menyimpan agenda!');
     }
   } catch (err) {
     console.error(err);
@@ -197,7 +226,7 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
   }
 });
 
-// Delete activity
+// ✅ Delete dengan REFRESH
 async function deleteActivity(id) {
   if (!confirm('Yakin ingin menghapus agenda ini?')) return;
   
@@ -207,10 +236,17 @@ async function deleteActivity(id) {
     });
     
     if (response.ok) {
-      alert('Agenda berhasil dihapus!');
-      location.reload();
+      alert('✅ Agenda berhasil dihapus!');
+      
+      // ✅ REFRESH data tanpa reload page
+      await loadActivities();
+      renderCalendar();
+      
+      if (selectedDate) {
+        showActivitiesForDate(selectedDate);
+      }
     } else {
-      alert('Gagal menghapus agenda!');
+      alert('❌ Gagal menghapus agenda!');
     }
   } catch (err) {
     console.error(err);
@@ -219,17 +255,20 @@ async function deleteActivity(id) {
 }
 
 // Event listeners
-document.getElementById('prevMonth').addEventListener('click', () => {
+document.getElementById('prevMonth').addEventListener('click', async () => {
   currentDate.setMonth(currentDate.getMonth() - 1);
+  await loadActivities(); // ✅ Load activities untuk bulan baru
   renderCalendar();
 });
 
-document.getElementById('nextMonth').addEventListener('click', () => {
+document.getElementById('nextMonth').addEventListener('click', async () => {
   currentDate.setMonth(currentDate.getMonth() + 1);
+  await loadActivities(); // ✅ Load activities untuk bulan baru
   renderCalendar();
 });
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
+// ✅ Initialize dengan load data
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadActivities();
   renderCalendar();
 });

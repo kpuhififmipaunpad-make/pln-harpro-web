@@ -118,3 +118,27 @@ router.delete('/activities/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+// Tambahkan route ini (setelah route '/api/activities/:date')
+router.get('/api/activities/month/:date', async (req, res) => {
+  try {
+    const targetDate = new Date(req.params.date);
+    const year = targetDate.getFullYear();
+    const month = targetDate.getMonth();
+    
+    const startOfMonth = new Date(year, month, 1);
+    const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59);
+    
+    const activities = await Activity.find({
+      date: {
+        $gte: startOfMonth,
+        $lte: endOfMonth
+      }
+    }).sort({ date: 1, gi: 1 });
+    
+    res.json(activities);
+  } catch (err) {
+    console.error('API error:', err);
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
