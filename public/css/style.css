@@ -181,7 +181,7 @@ body {
   position: relative;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2.5rem 3rem 4rem;
+  padding: 2rem 3rem 4rem;
   display: grid;
   grid-template-columns: 1.3fr 1fr;
   gap: 2.5rem;
@@ -497,7 +497,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* Calendar Section - PERBAIKAN UTAMA */
+/* Calendar Section */
 .calendar-section {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   padding: 0 0 3rem;
@@ -555,7 +555,7 @@ body {
   box-shadow: 0 6px 20px rgba(255, 209, 0, 0.4);
 }
 
-/* Calendar Days Header (Min, Sen, Sel...) */
+/* Days header */
 .calendar-days-header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -573,7 +573,7 @@ body {
   border-radius: 8px;
 }
 
-/* Calendar Grid - LANDSCAPE (Lebar, Pendek) */
+/* Calendar Grid */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -581,22 +581,25 @@ body {
 }
 
 .calendar-day {
+  position: relative;
   aspect-ratio: unset;
-  height: 70px;
-  padding: 0.8rem;
+  height: 80px;
+  padding-top: 1.4rem;
+  padding-bottom: 0.4rem;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
   background: white;
   border: 2px solid rgba(0, 162, 185, 0.1);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
   font-weight: 600;
   color: var(--text-dark);
-  position: relative;
 }
 
 .calendar-day:hover {
@@ -613,10 +616,10 @@ body {
 }
 
 .calendar-day.selected {
-  background: linear-gradient(135deg, var(--pln-blue) 0%, #007a8c 100%);
-  border-color: var(--pln-blue);
-  color: white;
-  font-weight: 700;
+  background: #00a2b9;
+  color: #ffffff;
+  border-color: #00839a;
+  box-shadow: 0 0 0 2px rgba(0, 162, 185, 0.25);
 }
 
 .calendar-day.has-activity {
@@ -624,20 +627,49 @@ body {
   border-color: var(--pln-blue);
 }
 
-.calendar-day.has-activity::after {
-  content: '';
-  position: absolute;
-  bottom: 8px;
-  width: 6px;
-  height: 6px;
-  background: var(--pln-red);
-  border-radius: 50%;
-  box-shadow: 0 0 8px rgba(215, 30, 40, 0.8);
-}
-
 .calendar-day.other-month {
   opacity: 0.3;
   background: #f8f9fa;
+}
+
+/* Strip marker di atas angka */
+.calendar-day .marker-strip {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  right: 8px;
+  height: 4px;
+  border-radius: 999px;
+  background: transparent;
+  display: flex;
+  gap: 3px;
+  overflow: hidden;
+}
+
+.calendar-day .marker-seg {
+  flex: 1;
+  height: 100%;
+  opacity: 0;
+}
+
+.marker-rutin { background: #16a34a; }
+.marker-non   { background: #eab308; }
+.marker-pihak { background: #0ea5e9; }
+.marker-libur { background: #ec4899; }
+
+.calendar-day.has-marker .marker-seg {
+  opacity: 1;
+}
+
+/* Deskripsi singkat di bawah angka */
+.calendar-day .day-desc {
+  margin-top: 2px;
+  font-size: 0.65rem;
+  line-height: 1.2;
+  text-align: center;
+  color: #6b7280;
+  max-height: 2.4em;
+  overflow: hidden;
 }
 
 /* Activity Container */
@@ -713,6 +745,7 @@ body {
   border: 2px solid rgba(255, 209, 0, 0.3);
 }
 
+/* Checkbox modern */
 .checkbox-group {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -720,29 +753,69 @@ body {
 }
 
 .checkbox-label {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 12px;
+  gap: 0.8rem;
+  padding: 1rem 1.2rem;
+  background: #f8f9fb;
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid #e9ecef;
-  color: var(--text-dark);
-}
-
-.checkbox-label:hover {
-  background: rgba(0, 162, 185, 0.1);
-  border-color: var(--pln-blue-tosca);
-  transform: translateY(-2px);
+  transition: all 0.2s ease;
+  border: 2px solid #e3e7f0;
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: 22px;
-  height: 22px;
-  cursor: pointer;
-  accent-color: var(--pln-blue-tosca);
+  width: 0;
+  height: 0;
+  opacity: 0;
+  position: absolute;
+}
+
+.checkbox-label::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid #c6cedd;
+  background: white;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.checkbox-label span {
+  font-weight: 600;
+  color: #2b3b52;
+  font-size: 0.95rem;
+}
+
+.checkbox-label:hover {
+  background: #eef5ff;
+  border-color: var(--pln-blue-light);
+  transform: translateY(-1px);
+}
+
+.checkbox-label input[type="checkbox"]:checked + span,
+.checkbox-label input[type="checkbox"]:checked ~ span {
+  color: var(--pln-blue-dark);
+  font-weight: 700;
+}
+
+/* Warna garis kiri per jenis pekerjaan */
+.checkbox-label.work-rutin {
+  border-left: 5px solid #16a34a;
+}
+
+.checkbox-label.work-nonrutin {
+  border-left: 5px solid #eab308;
+}
+
+.checkbox-label.work-pihaklain {
+  border-left: 5px solid #0ea5e9;
+}
+
+.checkbox-label.work-libur {
+  border-left: 5px solid #ec4899;
 }
 
 .btn-submit {

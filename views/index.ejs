@@ -208,19 +208,19 @@
               <div class="form-group">
                 <label>Jenis Pekerjaan:</label>
                 <div class="checkbox-group">
-                  <label class="checkbox-label">
+                  <label class="checkbox-label work-rutin">
                     <input type="checkbox" name="workTypes" value="Rutin">
                     <span>Rutin</span>
                   </label>
-                  <label class="checkbox-label">
+                  <label class="checkbox-label work-nonrutin">
                     <input type="checkbox" name="workTypes" value="Non Rutin">
                     <span>Non Rutin</span>
                   </label>
-                  <label class="checkbox-label">
+                  <label class="checkbox-label work-pihaklain">
                     <input type="checkbox" name="workTypes" value="Pihak Lain">
                     <span>Pihak Lain</span>
                   </label>
-                  <label class="checkbox-label">
+                  <label class="checkbox-label work-libur">
                     <input type="checkbox" name="workTypes" value="Libur Nasional">
                     <span>Libur Nasional</span>
                   </label>
@@ -251,7 +251,14 @@
 
               <div class="form-group">
                 <label for="description">Deskripsi Kegiatan:</label>
-                <textarea id="description" name="description" rows="3" placeholder="Contoh: Pemeliharaan trafo..."></textarea>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="3"
+                  maxlength="15"
+                  placeholder="Contoh: CO DSS PDLRU #1 (maks 3–4 kata)">
+                </textarea>
+
               </div>
 
               <div class="form-group">
