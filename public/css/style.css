@@ -617,7 +617,7 @@ body {
 
 .calendar-day.selected {
   background: #00a2b9;
-  color: #ffffff;
+  color: #00a2b9;
   border-color: #00839a;
   box-shadow: 0 0 0 2px rgba(0, 162, 185, 0.25);
 }
