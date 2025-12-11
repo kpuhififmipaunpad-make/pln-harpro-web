@@ -763,6 +763,7 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
   border: 2px solid #e3e7f0;
+  user-select: none;
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -795,10 +796,10 @@ body {
   transform: translateY(-1px);
 }
 
-.checkbox-label input[type="checkbox"]:checked + span,
-.checkbox-label input[type="checkbox"]:checked ~ span {
-  color: var(--pln-blue-dark);
-  font-weight: 700;
+/* STATE SAAT TERPILIH */
+.checkbox-label input[type="checkbox"]:checked + span {
+  color: var(--pln-blue-dark) !important;
+  font-weight: 700 !important;
 }
 
 /* Warna garis kiri per jenis pekerjaan */
@@ -817,6 +818,7 @@ body {
 .checkbox-label.work-libur {
   border-left: 5px solid #ec4899;
 }
+
 
 .btn-submit {
   width: 100%;
