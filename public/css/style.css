@@ -42,17 +42,12 @@ body {
   z-index: 9999;
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;     
-}
 
 
 .header-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 6rem;
+  padding: 0 4.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
