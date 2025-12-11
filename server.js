@@ -39,10 +39,6 @@ app.use((req, res) => {
 
 app.use(express.static('public'));
 
-<<<<<<< HEAD
-=======
-
->>>>>>> db2b76b (Improve agenda form styling and calendar day markers)
 // Start Server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 PLN HarPro Server running on port ${PORT}`);
