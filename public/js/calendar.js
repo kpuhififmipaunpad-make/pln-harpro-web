@@ -118,10 +118,18 @@ function selectDate(date, element) {
 
 function showActivitiesForDate(date) {
   const dateStr = date.toISOString().split('T')[0];
+  
+  console.log('🔍 Looking for activities on:', dateStr);
+  console.log('📊 Total activities loaded:', activitiesData.length);
+  console.log('📋 Activities data:', activitiesData);
+  
   const activities = activitiesData.filter(activity => {
     const activityDate = new Date(activity.date).toISOString().split('T')[0];
+    console.log('  Comparing:', activityDate, 'with', dateStr, '=', activityDate === dateStr);
     return activityDate === dateStr;
   });
+  
+  console.log('✅ Found', activities.length, 'activities');
   
   const activityList = document.getElementById('activityList');
   const noActivity = document.querySelector('.no-activity');
@@ -151,6 +159,7 @@ function showActivitiesForDate(date) {
     `).join('');
   }
 }
+
 
 // ✅ Form submission dengan REFRESH
 document.getElementById('scheduleForm').addEventListener('submit', async (e) => {

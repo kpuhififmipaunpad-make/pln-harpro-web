@@ -286,7 +286,8 @@
 
     <!-- Pass activities data to JavaScript -->
     <script>
-    window.activitiesData = [];
+      // ✅ PASS DATA dari server ke frontend
+      window.activitiesData = <%- JSON.stringify(activities) %>;
     </script>
 
   <script src="/js/calendar.js"></script>
