@@ -45,7 +45,7 @@ body {
 .header-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 3rem;
+  padding: 0 6rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -342,7 +342,7 @@ body {
 .hero-card {
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(3px);
   border-radius: 16px;
   padding: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
