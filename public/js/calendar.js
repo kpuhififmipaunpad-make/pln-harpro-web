@@ -119,6 +119,12 @@ function renderCalendar() {
 
       const allTypes = new Set(activitiesForDay.flatMap(a => a.workTypes || []));
 
+      // RESET dulu
+      segRutin.style.opacity = '0';
+      segNon.style.opacity   = '0';
+      segPihak.style.opacity = '0';
+      segLibur.style.opacity = '0';
+
       if (allTypes.has('Rutin')) segRutin.style.opacity = '1';
       if (allTypes.has('Non Rutin')) segNon.style.opacity = '1';
       if (allTypes.has('Pihak Lain')) segPihak.style.opacity = '1';
@@ -187,9 +193,14 @@ function showActivitiesForDate(date) {
       <div class="activity-item">
         <span class="activity-gi">${activity.gi}</span>
         <div class="activity-worktypes">
-          ${activity.workTypes.map(type =>
-            `<span class="activity-worktype">${type}</span>`
-          ).join('')}
+          ${activity.workTypes.map(type => {
+            let cls = '';
+            if (type === 'Rutin') cls = 'rutin';
+            else if (type === 'Non Rutin') cls = 'nonrutin';
+            else if (type === 'Pihak Lain') cls = 'pihaklain';
+            else if (type === 'Libur Nasional') cls = 'libur';
+            return `<span class="activity-worktype ${cls}">${type}</span>`;
+          }).join('')}
         </div>
         <div class="activity-personnel">
           ${activity.personnel.map(person =>

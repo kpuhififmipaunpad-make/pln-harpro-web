@@ -766,10 +766,9 @@ body {
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: 0;
-  height: 0;
-  opacity: 0;
   position: absolute;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .checkbox-label::before {
@@ -878,13 +877,31 @@ body {
 .activity-worktype {
   display: inline-block;
   padding: 0.4rem 1rem;
-  background: var(--pln-yellow);
-  color: var(--pln-blue-dark);
   border-radius: 15px;
   font-size: 0.85rem;
   font-weight: 600;
   margin: 0.3rem 0.3rem 0.3rem 0;
-  box-shadow: 0 2px 8px rgba(255, 209, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.activity-worktype.rutin {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.activity-worktype.nonrutin {
+  background: #eab308;
+  color: #1f2933;
+}
+
+.activity-worktype.pihaklain {
+  background: #0ea5e9;
+  color: #ffffff;
+}
+
+.activity-worktype.libur {
+  background: #ec4899;
+  color: #ffffff;
 }
 
 .personnel-tag {
