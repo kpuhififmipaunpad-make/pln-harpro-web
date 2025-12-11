@@ -382,7 +382,7 @@ body {
 
 /* Container - Now White Background */
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0rem 2rem;
   background: white;
@@ -394,7 +394,7 @@ body {
   color: var(--pln-blue-dark);
   text-align: center;
   margin-bottom: 3rem;
-  margin-top: 0rem;
+  margin-top: 01rem;
   position: relative;
   padding-bottom: 1.2rem;
 }
@@ -415,7 +415,7 @@ body {
 /* Personnel Section - Simple, no overlay needed */
 .personnel-section {
   background: white;
-  padding: 3rem 0 0;
+  padding: 3rem 0 2;
   position: relative;
 }
 
