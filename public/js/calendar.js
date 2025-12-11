@@ -1,4 +1,4 @@
-// Ambil data activities dari window object (initial load)
+// Ambil data activities dari window object
 let activitiesData = window.activitiesData || [];
 
 // Calendar functionality
@@ -12,6 +12,17 @@ const monthNames = [
 
 const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
+console.log('📊 Initial activities loaded:', activitiesData.length);
+
+// ✅ HELPER: Convert UTC date to local date string (YYYY-MM-DD)
+function getLocalDateString(date) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 // ✅ LOAD ACTIVITIES dari server (AJAX)
 async function loadActivities() {
   try {
@@ -19,10 +30,10 @@ async function loadActivities() {
     const month = currentDate.getMonth();
     const startOfMonth = new Date(year, month, 1).toISOString().split('T')[0];
     
-    // Load all activities for current month
     const response = await fetch(`/api/activities/month/${startOfMonth}`);
     if (response.ok) {
       activitiesData = await response.json();
+      console.log('🔄 Loaded activities:', activitiesData.length);
     }
   } catch (err) {
     console.error('Error loading activities:', err);
@@ -67,15 +78,15 @@ function renderCalendar() {
     dayCell.textContent = day;
     
     const cellDate = new Date(year, month, day);
-    const dateStr = cellDate.toISOString().split('T')[0];
+    const dateStr = getLocalDateString(cellDate);
     
     if (cellDate.toDateString() === today.toDateString()) {
       dayCell.classList.add('today');
     }
     
-    // Check if has activity
+    // ✅ Check if has activity (timezone-safe)
     const hasActivity = activitiesData.some(activity => {
-      const activityDate = new Date(activity.date).toISOString().split('T')[0];
+      const activityDate = getLocalDateString(activity.date);
       return activityDate === dateStr;
     });
     
@@ -107,7 +118,7 @@ function selectDate(date, element) {
   selectedDate = date;
   
   // Update form
-  const dateStr = date.toISOString().split('T')[0];
+  const dateStr = getLocalDateString(date);
   document.getElementById('selectedDate').value = dateStr;
   document.getElementById('selectedDateDisplay').textContent = 
     `${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
@@ -117,25 +128,15 @@ function selectDate(date, element) {
 }
 
 function showActivitiesForDate(date) {
-  // ✅ FIX: Gunakan local date (bukan UTC)
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const dateStr = `${year}-${month}-${day}`;
+  const dateStr = getLocalDateString(date);
   
   console.log('🔍 Looking for activities on:', dateStr);
   console.log('📊 Total activities loaded:', activitiesData.length);
-  console.log('📋 Activities data:', activitiesData);
   
+  // ✅ Filter activities (timezone-safe)
   const activities = activitiesData.filter(activity => {
-    // ✅ FIX: Parse date dari database (tanpa timezone issue)
-    const actDate = new Date(activity.date);
-    const actYear = actDate.getFullYear();
-    const actMonth = String(actDate.getMonth() + 1).padStart(2, '0');
-    const actDay = String(actDate.getDate()).padStart(2, '0');
-    const activityDate = `${actYear}-${actMonth}-${actDay}`;
-    
-    console.log('  Comparing:', activityDate, '===', dateStr, '→', activityDate === dateStr);
+    const activityDate = getLocalDateString(activity.date);
+    console.log('  Comparing:', activityDate, '===', dateStr);
     return activityDate === dateStr;
   });
   
@@ -170,15 +171,12 @@ function showActivitiesForDate(date) {
   }
 }
 
-
-
-// ✅ Form submission dengan REFRESH
+// Form submission
 document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   
   const formData = new FormData(e.target);
   
-  // Get selected checkboxes
   const workTypes = Array.from(document.querySelectorAll('input[name="workTypes"]:checked'))
     .map(cb => cb.value);
   const personnel = Array.from(document.querySelectorAll('input[name="personnel"]:checked'))
@@ -225,7 +223,6 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
     if (response.ok) {
       alert('✅ Agenda berhasil disimpan!');
       
-      // ✅ REFRESH data tanpa reload page
       await loadActivities();
       renderCalendar();
       
@@ -233,7 +230,6 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
       e.target.reset();
       document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
       
-      // Show updated activities
       if (selectedDate) {
         showActivitiesForDate(selectedDate);
       }
@@ -246,7 +242,7 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
   }
 });
 
-// ✅ Delete dengan REFRESH
+// Delete activity
 async function deleteActivity(id) {
   if (!confirm('Yakin ingin menghapus agenda ini?')) return;
   
@@ -258,7 +254,6 @@ async function deleteActivity(id) {
     if (response.ok) {
       alert('✅ Agenda berhasil dihapus!');
       
-      // ✅ REFRESH data tanpa reload page
       await loadActivities();
       renderCalendar();
       
@@ -277,18 +272,19 @@ async function deleteActivity(id) {
 // Event listeners
 document.getElementById('prevMonth').addEventListener('click', async () => {
   currentDate.setMonth(currentDate.getMonth() - 1);
-  await loadActivities(); // ✅ Load activities untuk bulan baru
+  await loadActivities();
   renderCalendar();
 });
 
 document.getElementById('nextMonth').addEventListener('click', async () => {
   currentDate.setMonth(currentDate.getMonth() + 1);
-  await loadActivities(); // ✅ Load activities untuk bulan baru
+  await loadActivities();
   renderCalendar();
 });
 
-// ✅ Initialize dengan load data
+// Initialize
 document.addEventListener('DOMContentLoaded', async () => {
+  console.log('🚀 Calendar initializing...');
   await loadActivities();
   renderCalendar();
 });
