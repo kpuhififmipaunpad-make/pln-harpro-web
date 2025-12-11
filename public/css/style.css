@@ -690,6 +690,9 @@ body {
   padding: 2.5rem;
   box-shadow: 0 10px 40px rgba(0, 86, 133, 0.1);
   border: 2px solid rgba(0, 162, 185, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .activity-form h3,
@@ -885,11 +888,15 @@ body {
 .activity-item {
   background: #f8f9fa;
   border-left: 5px solid var(--pln-yellow);
-  padding: 1.5rem;
+  padding: 1.2rem 1.5rem;
   margin-bottom: 1rem;
-  border-radius: 12px;
+  border-radius: 16px;
   transition: all 0.3s ease;
   border: 2px solid #e9ecef;
+}
+
+.activity-item + .activity-item {
+  margin-top: 0.75rem;
 }
 
 .activity-item:hover {
@@ -901,13 +908,13 @@ body {
 
 .activity-gi {
   display: inline-block;
-  padding: 0.5rem 1.2rem;
+  padding: 0.55rem 1.4rem;
   background: var(--pln-blue-dark);
   color: white;
-  border-radius: 20px;
+  border-radius: 999px;
   font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   box-shadow: 0 3px 10px rgba(0, 86, 133, 0.3);
 }
 
@@ -918,7 +925,37 @@ body {
   font-size: 0.85rem;
   font-weight: 600;
   margin: 0.3rem 0.3rem 0.3rem 0;
+  margin-bottom: 0.4rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.activity-worktypes .activity-worktype {
+  margin-right: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.activity-personnel {
+  margin-bottom: 0.4rem;
+}
+
+.activity-personnel {
+  margin-bottom: 0.4rem;
+}
+
+.activity-description {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.activity-notes {
+  margin-top: 0.1rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.btn-delete {
+  margin-top: 0.75rem;
 }
 
 .activity-worktype.rutin {
