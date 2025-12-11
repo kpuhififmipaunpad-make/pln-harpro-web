@@ -285,10 +285,8 @@
   </footer>
 
   <script>
-    // ✅ Set ke window, BUKAN deklarasi variable baru
     window.activitiesData = <%- JSON.stringify(activities || []) %>;
-    console.log('📊 Loaded activities from server:', window.activitiesData.length);
-    console.log('📋 Activities:', window.activitiesData);
+    console.log('Loaded activities from server:', window.activitiesData.length);
   </script>
 
   <script src="/js/calendar.js"></script>

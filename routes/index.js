@@ -38,28 +38,25 @@ router.get('/', async (req, res) => {
 // Get activities by month (AJAX)
 router.get('/api/activities/month/:date', async (req, res) => {
   try {
-    const targetDate = new Date(req.params.date);
-    const year = targetDate.getFullYear();
-    const month = targetDate.getMonth();
-    
-    const startOfMonth = new Date(year, month, 1);
-    const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59);
-    
+    const base = new Date(req.params.date);        // misal 2025-12-01
+    const year = base.getUTCFullYear();
+    const month = base.getUTCMonth();
+
+    const startOfMonth = new Date(Date.UTC(year, month, 1, 0, 0, 0));
+    const endOfMonth   = new Date(Date.UTC(year, month + 1, 1, 0, 0, 0));
+
     const activities = await Activity.find({
-      date: {
-        $gte: startOfMonth,
-        $lte: endOfMonth
-      }
+      date: { $gte: startOfMonth, $lt: endOfMonth }
     }).sort({ date: 1, gi: 1 });
-    
-    console.log(`📅 API month request: ${activities.length} activities found`); // DEBUG
-    
+
+    console.log('API month → found', activities.length, 'activities');
     res.json(activities);
   } catch (err) {
     console.error('API month error:', err);
     res.status(500).json({ error: 'Server Error' });
   }
 });
+
 
 // Get activities by date (AJAX)
 router.get('/api/activities/:date', async (req, res) => {

@@ -1,5 +1,6 @@
 // Ambil data activities dari window object
-let activitiesData = window.activitiesData || [];
+var activitiesData = window.activitiesData || [];
+console.log('Initial activities loaded:', activitiesData.length);
 
 // Calendar functionality
 let currentDate = new Date();
