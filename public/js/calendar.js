@@ -102,11 +102,11 @@ function renderCalendar() {
     markerStrip.appendChild(segPihak);
     markerStrip.appendChild(segLibur);
 
-    const desc = document.createElement('div');
-    desc.className = 'day-desc';
+    const descList = document.createElement('div');
+    descList.className = 'day-desc-list';
 
     dayCell.appendChild(markerStrip);
-    dayCell.appendChild(desc);
+    dayCell.appendChild(descList);
 
     // Ambil semua kegiatan di tanggal ini
     const activitiesForDay = activitiesData.filter(activity => {
@@ -119,22 +119,39 @@ function renderCalendar() {
 
       const allTypes = new Set(activitiesForDay.flatMap(a => a.workTypes || []));
 
-      // RESET dulu
+      // reset segmen
       segRutin.style.opacity = '0';
       segNon.style.opacity   = '0';
       segPihak.style.opacity = '0';
       segLibur.style.opacity = '0';
 
-      if (allTypes.has('Rutin')) segRutin.style.opacity = '1';
-      if (allTypes.has('Non Rutin')) segNon.style.opacity = '1';
-      if (allTypes.has('Pihak Lain')) segPihak.style.opacity = '1';
+      if (allTypes.has('Rutin'))          segRutin.style.opacity = '1';
+      if (allTypes.has('Non Rutin'))      segNon.style.opacity   = '1';
+      if (allTypes.has('Pihak Lain'))     segPihak.style.opacity = '1';
       if (allTypes.has('Libur Nasional')) segLibur.style.opacity = '1';
 
-      const firstDesc = (activitiesForDay[0].description || '').trim();
-      if (firstDesc) {
-        const words = firstDesc.split(/\s+/).slice(0, 10);
-        desc.textContent = words.join(' ');
-      }
+      // deskripsi: ambil maksimal 2 activity
+      descList.innerHTML = '';
+      activitiesForDay.slice(0, 2).forEach(activity => {
+        const rawDesc = (activity.description || '').trim();
+        if (!rawDesc) return;
+
+        const words = rawDesc.split(/\s+/).slice(0, 6); // lebih pendek biar muat 2 baris
+        const shortDesc = words.join(' ');
+
+        const descItem = document.createElement('div');
+        descItem.classList.add('day-desc-item');
+
+        // tentukan warna berdasarkan jenis pekerjaan (ambil prioritas pertama)
+        const types = activity.workTypes || [];
+        if (types.includes('Rutin')) descItem.classList.add('day-desc-rutin');
+        else if (types.includes('Non Rutin')) descItem.classList.add('day-desc-non');
+        else if (types.includes('Pihak Lain')) descItem.classList.add('day-desc-pihak');
+        else if (types.includes('Libur Nasional')) descItem.classList.add('day-desc-libur');
+
+        descItem.textContent = shortDesc;
+        descList.appendChild(descItem);
+      });
     }
 
     dayCell.addEventListener('click', () => selectDate(cellDate, dayCell));

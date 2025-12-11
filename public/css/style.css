@@ -672,6 +672,40 @@ body {
   overflow: hidden;
 }
 
+.calendar-day .day-desc-list {
+  margin-top: 2px;
+  font-size: 0.65rem;
+  line-height: 1.2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.calendar-day .day-desc-item {
+  padding: 0 2px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* warna sesuai jenis pekerjaan utama di activity tsb */
+.day-desc-rutin {
+  color: #16a34a;
+}
+
+.day-desc-non {
+  color: #eab308;
+}
+
+.day-desc-pihak {
+  color: #0ea5e9;
+}
+
+.day-desc-libur {
+  color: #ec4899;
+}
+
+
 /* Activity Container */
 .activity-container {
   display: grid;
