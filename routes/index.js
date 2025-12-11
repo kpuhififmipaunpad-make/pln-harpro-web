@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Personnel = require('../models/Personnel');
-const Activity = require('../models/activity'); 
+const Activity = require('../models/activity');
 
 // Home Page
 router.get('/', async (req, res) => {
@@ -16,17 +16,10 @@ router.get('/', async (req, res) => {
     }
     
     try {
-      // Get activities untuk bulan ini
-      const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      // ✅ Get ALL activities (tidak dibatasi bulan)
+      activities = await Activity.find().sort({ date: 1, gi: 1 });
       
-      activities = await Activity.find({
-        date: {
-          $gte: startOfMonth,
-          $lte: endOfMonth
-        }
-      }).sort({ date: 1, gi: 1 });
+      console.log('📊 Sending activities to frontend:', activities.length); // DEBUG
     } catch (err) {
       console.error('Error fetching activities:', err);
     }
@@ -38,6 +31,33 @@ router.get('/', async (req, res) => {
   } catch (err) {
     console.error('Route error:', err);
     res.status(500).send('Server Error');
+  }
+});
+
+// ✅ PENTING: Route month HARUS di atas route :date
+// Get activities by month (AJAX)
+router.get('/api/activities/month/:date', async (req, res) => {
+  try {
+    const targetDate = new Date(req.params.date);
+    const year = targetDate.getFullYear();
+    const month = targetDate.getMonth();
+    
+    const startOfMonth = new Date(year, month, 1);
+    const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59);
+    
+    const activities = await Activity.find({
+      date: {
+        $gte: startOfMonth,
+        $lte: endOfMonth
+      }
+    }).sort({ date: 1, gi: 1 });
+    
+    console.log(`📅 API month request: ${activities.length} activities found`); // DEBUG
+    
+    res.json(activities);
+  } catch (err) {
+    console.error('API month error:', err);
+    res.status(500).json({ error: 'Server Error' });
   }
 });
 
@@ -86,6 +106,8 @@ router.post('/activities', async (req, res) => {
       existingActivity.notes = notes || '';
       existingActivity.updatedAt = new Date();
       await existingActivity.save();
+      
+      console.log('✅ Activity updated:', existingActivity._id); // DEBUG
     } else {
       // Create new
       const newActivity = new Activity({
@@ -97,6 +119,8 @@ router.post('/activities', async (req, res) => {
         notes: notes || ''
       });
       await newActivity.save();
+      
+      console.log('✅ Activity created:', newActivity._id); // DEBUG
     }
     
     res.json({ success: true });
@@ -110,6 +134,7 @@ router.post('/activities', async (req, res) => {
 router.delete('/activities/:id', async (req, res) => {
   try {
     await Activity.findByIdAndDelete(req.params.id);
+    console.log('✅ Activity deleted:', req.params.id); // DEBUG
     res.json({ success: true });
   } catch (err) {
     console.error('Delete error:', err);
@@ -118,52 +143,3 @@ router.delete('/activities/:id', async (req, res) => {
 });
 
 module.exports = router;
-
-// Tambahkan route ini (setelah route '/api/activities/:date')
-router.get('/api/activities/month/:date', async (req, res) => {
-  try {
-    const targetDate = new Date(req.params.date);
-    const year = targetDate.getFullYear();
-    const month = targetDate.getMonth();
-    
-    const startOfMonth = new Date(year, month, 1);
-    const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59);
-    
-    const activities = await Activity.find({
-      date: {
-        $gte: startOfMonth,
-        $lte: endOfMonth
-      }
-    }).sort({ date: 1, gi: 1 });
-    
-    res.json(activities);
-  } catch (err) {
-    console.error('API error:', err);
-    res.status(500).json({ error: 'Server Error' });
-  }
-});
-
-
-
-router.get('/api/activities/month/:date', async (req, res) => {
-  try {
-    const targetDate = new Date(req.params.date);
-    const year = targetDate.getFullYear();
-    const month = targetDate.getMonth();
-    
-    const startOfMonth = new Date(year, month, 1);
-    const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59);
-    
-    const activities = await Activity.find({
-      date: {
-        $gte: startOfMonth,
-        $lte: endOfMonth
-      }
-    }).sort({ date: 1, gi: 1 });
-    
-    res.json(activities);
-  } catch (err) {
-    console.error('API month error:', err);
-    res.status(500).json({ error: 'Server Error' });
-  }
-});
