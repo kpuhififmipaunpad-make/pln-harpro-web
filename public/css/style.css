@@ -31,12 +31,12 @@ body {
 /* Header - Modern Glassmorphism */
 .header {
   background: rgba(0, 86, 133, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
   color: var(--text-light);
-  padding: 1rem 0;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 9999;
@@ -45,7 +45,7 @@ body {
 .header-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 3rem;
+  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -58,10 +58,10 @@ body {
 }
 
 .logo-pln {
-  width: 70px;
-  height: 70px;
+  width: 56px;
+  height: 56px;
   background: white;
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 10px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
@@ -81,14 +81,14 @@ body {
 }
 
 .header-text h1 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 0.2rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .header-text p {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   opacity: 0.95;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
@@ -103,20 +103,20 @@ body {
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
-  padding: 0.9rem 1.8rem;
-  border-radius: 12px;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .nav-menu a:hover,
 .nav-menu a.active {
   background: var(--pln-yellow);
   color: var(--pln-blue-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 209, 0, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(255, 209, 0, 0.4);
 }
 
 /* Hero Section */
@@ -1063,7 +1063,7 @@ body {
 @media (max-width: 1200px) {
   .hero-content-wrapper {
     max-width: 100%;
-    padding: 3rem 2rem 4.5rem;
+    padding: 1rem 2rem 4.5rem;
   }
   
   .hero-title {
