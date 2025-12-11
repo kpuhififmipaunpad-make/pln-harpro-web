@@ -36,11 +36,18 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.18);
   color: var(--text-light);
   padding: 0.5rem 0;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 24px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 9999;
 }
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;     
+}
+
 
 .header-container {
   max-width: 1400px;
@@ -263,8 +270,8 @@ body {
   gap: 2rem;
   margin-bottom: 1rem;
   padding: 1rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .stat-item {
@@ -341,7 +348,7 @@ body {
 
 .hero-card {
   background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 16px;
   padding: 1rem;
