@@ -382,9 +382,9 @@ body {
 
 /* Container - Now White Background */
 .container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 0rem 2rem;
+  padding: 1rem 2rem;
   background: white;
 }
 
