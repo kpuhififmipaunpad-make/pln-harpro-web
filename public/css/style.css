@@ -415,7 +415,7 @@ body {
 /* Personnel Section - Simple, no overlay needed */
 .personnel-section {
   background: white;
-  padding: 3rem 0 2;
+  padding: 3rem 0 2rem;
   position: relative;
 }
 
