@@ -284,17 +284,12 @@
     </div>
   </footer>
 
-<script>
-  // ✅ PASS DATA dari server ke frontend
-  window.activitiesData = <%- JSON.stringify(activities || []) %>;
-  console.log('📊 Loaded activities from server:', window.activitiesData.length);
-  console.log('📋 Activities:', window.activitiesData);
-</script>
-
-<script src="/js/calendar.js"></script>
-
-
-
+  <script>
+    // ✅ Set ke window, BUKAN deklarasi variable baru
+    window.activitiesData = <%- JSON.stringify(activities || []) %>;
+    console.log('📊 Loaded activities from server:', window.activitiesData.length);
+    console.log('📋 Activities:', window.activitiesData);
+  </script>
 
   <script src="/js/calendar.js"></script>
 </body>
