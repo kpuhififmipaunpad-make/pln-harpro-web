@@ -373,42 +373,47 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 });
 
-// Export to PDF
+/// Export to PDF
 document.getElementById('exportPDF')?.addEventListener('click', async () => {
-  const calendarSection = document.querySelector('.calendar-wrapper');
+  // Capture seluruh area: judul + kalender wrapper
+  const captureArea = document.querySelector('.calendar-section .container');
   const monthTitle = document.getElementById('currentMonth').textContent;
   
-  // Capture tampilan kalender
-  const canvas = await html2canvas(calendarSection, {
+  const canvas = await html2canvas(captureArea, {
     scale: 2,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
+    logging: false,
+    useCORS: true
   });
   
   const imgData = canvas.toDataURL('image/png');
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF('p', 'mm', 'a4');
   
-  // Tambah judul
-  pdf.setFontSize(16);
-  pdf.text('Kalender Kegiatan Bulanan', 105, 15, { align: 'center' });
-  pdf.setFontSize(12);
-  pdf.text(monthTitle, 105, 25, { align: 'center' });
-  
-  // Tambah gambar kalender
-  const imgWidth = 180;
+  const imgWidth = 190;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  pdf.addImage(imgData, 'PNG', 15, 35, imgWidth, imgHeight);
   
-  pdf.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
+  // Kalau gambar terlalu panjang, bisa atur ukuran atau orientasi
+  if (imgHeight > 280) {
+    // Pakai landscape kalau kepanjangan
+    const pdfLandscape = new jsPDF('l', 'mm', 'a4');
+    pdfLandscape.addImage(imgData, 'PNG', 10, 10, 277, (canvas.height * 277) / canvas.width);
+    pdfLandscape.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
+  } else {
+    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+    pdf.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
+  }
 });
 
 // Export to PNG
 document.getElementById('exportPNG')?.addEventListener('click', async () => {
-  const calendarSection = document.querySelector('.calendar-wrapper');
+  const captureArea = document.querySelector('.calendar-section .container');
   
-  const canvas = await html2canvas(calendarSection, {
+  const canvas = await html2canvas(captureArea, {
     scale: 2,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
+    logging: false,
+    useCORS: true
   });
   
   const monthTitle = document.getElementById('currentMonth').textContent;
