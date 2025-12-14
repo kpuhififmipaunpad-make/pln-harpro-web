@@ -1140,6 +1140,29 @@ body {
   box-shadow: 0 6px 16px rgba(255, 209, 0, 0.5);
 }
 
+/* Watermark - hidden di web */
+.calendar-watermark {
+  display: none; 
+  text-align: center;
+  font-size: 0.75rem;
+  color: #6b7280;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 0 0 12px 12px;
+}
+
+.calendar-watermark a {
+  color: #0ea5e9;
+  text-decoration: none;
+}
+
+/* Saat export, watermark dimunculkan */
+.calendar-export-area.exporting .calendar-watermark {
+  display: block;
+}
+
+
 /* Responsive */
 @media (max-width: 1200px) {
   .hero-content-wrapper {

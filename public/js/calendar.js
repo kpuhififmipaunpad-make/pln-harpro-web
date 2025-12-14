@@ -375,9 +375,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Export to PDF
 document.getElementById('exportPDF')?.addEventListener('click', async () => {
+  const exportArea = document.querySelector('.calendar-export-area');
   const exportButtons = document.querySelector('.export-buttons');
-  exportButtons.style.display = 'none'; // Sembunyikan tombol saat capture
-
+  
+  // Sembunyikan tombol, tampilkan watermark
+  exportButtons.style.display = 'none';
+  exportArea.classList.add('exporting');
+  
   const captureArea = document.querySelector('.calendar-export-area');
   const monthTitle = document.getElementById('currentMonth').textContent;
   
@@ -388,7 +392,9 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
     useCORS: true
   });
   
-  exportButtons.style.display = 'flex'; // Tampilkan lagi
+  // Kembalikan state normal
+  exportButtons.style.display = 'flex';
+  exportArea.classList.remove('exporting');
   
   const imgData = canvas.toDataURL('image/png');
   const { jsPDF } = window.jspdf;
@@ -403,9 +409,12 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
 
 // Export to PNG
 document.getElementById('exportPNG')?.addEventListener('click', async () => {
+  const exportArea = document.querySelector('.calendar-export-area');
   const exportButtons = document.querySelector('.export-buttons');
+  
   exportButtons.style.display = 'none';
-
+  exportArea.classList.add('exporting');
+  
   const captureArea = document.querySelector('.calendar-export-area');
   
   const canvas = await html2canvas(captureArea, {
@@ -416,6 +425,7 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
   });
   
   exportButtons.style.display = 'flex';
+  exportArea.classList.remove('exporting');
   
   const monthTitle = document.getElementById('currentMonth').textContent;
   const link = document.createElement('a');
