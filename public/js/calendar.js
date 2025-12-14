@@ -373,10 +373,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 });
 
-/// Export to PDF
+// Export to PDF
 document.getElementById('exportPDF')?.addEventListener('click', async () => {
-  // Capture seluruh area: judul + kalender wrapper
-  const captureArea = document.querySelector('.calendar-section .container');
+  const exportButtons = document.querySelector('.export-buttons');
+  exportButtons.style.display = 'none'; // Sembunyikan tombol saat capture
+
+  const captureArea = document.querySelector('.calendar-export-area');
   const monthTitle = document.getElementById('currentMonth').textContent;
   
   const canvas = await html2canvas(captureArea, {
@@ -386,6 +388,8 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
     useCORS: true
   });
   
+  exportButtons.style.display = 'flex'; // Tampilkan lagi
+  
   const imgData = canvas.toDataURL('image/png');
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF('p', 'mm', 'a4');
@@ -393,21 +397,16 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
   const imgWidth = 190;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
   
-  // Kalau gambar terlalu panjang, bisa atur ukuran atau orientasi
-  if (imgHeight > 280) {
-    // Pakai landscape kalau kepanjangan
-    const pdfLandscape = new jsPDF('l', 'mm', 'a4');
-    pdfLandscape.addImage(imgData, 'PNG', 10, 10, 277, (canvas.height * 277) / canvas.width);
-    pdfLandscape.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
-  } else {
-    pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-    pdf.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
-  }
+  pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+  pdf.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
 });
 
 // Export to PNG
 document.getElementById('exportPNG')?.addEventListener('click', async () => {
-  const captureArea = document.querySelector('.calendar-section .container');
+  const exportButtons = document.querySelector('.export-buttons');
+  exportButtons.style.display = 'none';
+
+  const captureArea = document.querySelector('.calendar-export-area');
   
   const canvas = await html2canvas(captureArea, {
     scale: 2,
@@ -415,6 +414,8 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
     logging: false,
     useCORS: true
   });
+  
+  exportButtons.style.display = 'flex';
   
   const monthTitle = document.getElementById('currentMonth').textContent;
   const link = document.createElement('a');

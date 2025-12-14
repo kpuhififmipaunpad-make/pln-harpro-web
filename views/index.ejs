@@ -167,18 +167,22 @@
     <!-- Calendar Section -->
     <section id="kalender" class="calendar-section">
       <div class="container">
-        <h2 class="section-title">Kalender Kegiatan Bulanan</h2>
-        
-        <div class="calendar-wrapper">
-          <div class="calendar-header">
-            <button class="month-nav" id="prevMonth">&lt;</button>
-            <h3 id="currentMonth"></h3>
-            <button class="month-nav" id="nextMonth">&gt;</button>
-          </div>
+        <!-- Wrapper khusus untuk export (judul + kalender + tombol) -->
+        <div class="calendar-export-area">
+          <h2 class="section-title">Kalender Kegiatan Bulanan</h2>
           
-          <div class="calendar-grid" id="calendarGrid">
+          <div class="calendar-wrapper">
+            <div class="calendar-header">
+              <button class="month-nav" id="prevMonth">&lt;</button>
+              <h3 id="currentMonth"></h3>
+              <button class="month-nav" id="nextMonth">&gt;</button>
+            </div>
+            
+            <div class="calendar-grid" id="calendarGrid">
+            </div>
           </div>
-          <!-- Tombol Export -->
+
+          <!-- Tombol Export (pindah ke luar calendar-wrapper tapi masih di dalam export-area) -->
           <div class="export-buttons">
             <button id="exportPDF" class="btn-export">
               <span>📄</span> Export ke PDF
@@ -188,8 +192,9 @@
             </button>
           </div>
         </div>
+        <!-- Akhir calendar-export-area -->
 
-        <!-- Activity Form & Details -->
+        <!-- Activity Form & Details (di luar area export) -->
         <div class="activity-container">
           <!-- Form Input Activity -->
           <div class="activity-form" id="activityForm">
@@ -262,6 +267,7 @@
                   </label>
                 </div>
               </div>
+
               <div class="form-group">
                 <label for="description">Deskripsi Kegiatan:</label>
                 <textarea
@@ -271,6 +277,7 @@
                   maxlength="15"
                   placeholder="Contoh: CO DSS PDLRU #1 (maks 3–4 kata)"></textarea>
               </div>
+
               <div class="form-group">
                 <label for="notes">Catatan:</label>
                 <textarea id="notes" name="notes" rows="2" placeholder="Catatan tambahan..."></textarea>
