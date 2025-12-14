@@ -373,3 +373,47 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 });
 
+// Export to PDF
+document.getElementById('exportPDF')?.addEventListener('click', async () => {
+  const calendarSection = document.querySelector('.calendar-wrapper');
+  const monthTitle = document.getElementById('currentMonth').textContent;
+  
+  // Capture tampilan kalender
+  const canvas = await html2canvas(calendarSection, {
+    scale: 2,
+    backgroundColor: '#ffffff'
+  });
+  
+  const imgData = canvas.toDataURL('image/png');
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  
+  // Tambah judul
+  pdf.setFontSize(16);
+  pdf.text('Kalender Kegiatan Bulanan', 105, 15, { align: 'center' });
+  pdf.setFontSize(12);
+  pdf.text(monthTitle, 105, 25, { align: 'center' });
+  
+  // Tambah gambar kalender
+  const imgWidth = 180;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  pdf.addImage(imgData, 'PNG', 15, 35, imgWidth, imgHeight);
+  
+  pdf.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
+});
+
+// Export to PNG
+document.getElementById('exportPNG')?.addEventListener('click', async () => {
+  const calendarSection = document.querySelector('.calendar-wrapper');
+  
+  const canvas = await html2canvas(calendarSection, {
+    scale: 2,
+    backgroundColor: '#ffffff'
+  });
+  
+  const monthTitle = document.getElementById('currentMonth').textContent;
+  const link = document.createElement('a');
+  link.download = `Kalender-${monthTitle.replace(/\s+/g, '-')}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
