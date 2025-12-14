@@ -1062,16 +1062,66 @@ body {
   opacity: 0.9;
 }
 
+/* Legend di dalam kalender */
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.legend-label {
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+/* Calendar wrapper - buang border-radius bawah supaya nyambung ke tombol */
+.calendar-wrapper {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px 16px 0 0;  /* radius cuma atas, bawah lurus */
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: none;  /* hilangin border bawah supaya nyambung */
+}
+
+/* Tombol export - lanjutan dari calendar wrapper */
 .export-buttons {
   display: flex;
   gap: 1rem;
   justify-content: center;
-  margin-top: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 0 0 16px 16px;  /* radius cuma bawah, atas lurus */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: none;  /* hilangin border atas supaya nyambung */
+  margin-top: 0;  /* pastikan rapat ke atas */
 }
 
 .btn-export {
   padding: 0.75rem 1.5rem;
-  background: rgba(255, 209, 0, 0.95);
+  background: linear-gradient(135deg, #ffd100 0%, #ffb800 100%);
   color: var(--pln-blue-dark);
   border: none;
   border-radius: 8px;
@@ -1081,14 +1131,14 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(255, 209, 0, 0.3);
 }
 
 .btn-export:hover {
-  background: var(--pln-yellow);
+  background: linear-gradient(135deg, #ffb800 0%, #ff9500 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 209, 0, 0.4);
+  box-shadow: 0 6px 16px rgba(255, 209, 0, 0.5);
 }
-
 
 /* Responsive */
 @media (max-width: 1200px) {
