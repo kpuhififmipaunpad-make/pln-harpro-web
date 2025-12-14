@@ -378,58 +378,53 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
   const exportArea = document.querySelector('.calendar-export-area');
   const exportButtons = document.querySelector('.export-buttons');
   
-  // Sembunyikan tombol, tampilkan watermark
   exportButtons.style.display = 'none';
   exportArea.classList.add('exporting');
   
-  const captureArea = document.querySelector('.calendar-export-area');
-  const monthTitle = document.getElementById('currentMonth').textContent;
-  
-  const canvas = await html2canvas(captureArea, {
-    scale: 2,
+  const canvas = await html2canvas(exportArea, {
+    scale: 1.5,  // turunkan dari 2 jadi 1.5 supaya file lebih kecil
     backgroundColor: '#ffffff',
     logging: false,
     useCORS: true
   });
   
-  // Kembalikan state normal
   exportButtons.style.display = 'flex';
   exportArea.classList.remove('exporting');
   
-  const imgData = canvas.toDataURL('image/png');
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF('p', 'mm', 'a4');
+  const monthTitle = document.getElementById('currentMonth').textContent;
   
-  const imgWidth = 190;
+  // Kompres gambar jadi JPEG supaya ukuran lebih kecil
+  const imgData = canvas.toDataURL('image/jpeg', 0.85);  // quality 85%
+  
+  const { jsPDF } = window.jspdf;
+  
+  // Hitung ukuran proporsional agar pas di A4
+  const pdfWidth = 210;  // A4 width dalam mm
+  const pdfHeight = 297; // A4 height dalam mm
+  const margin = 10;
+  
+  const availableWidth = pdfWidth - (margin * 2);
+  const availableHeight = pdfHeight - (margin * 2);
+  
+  const imgWidth = availableWidth;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
   
-  pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+  let finalHeight = imgHeight;
+  let finalWidth = imgWidth;
+  
+  // Kalau gambar terlalu tinggi, resize supaya pas
+  if (imgHeight > availableHeight) {
+    finalHeight = availableHeight;
+    finalWidth = (canvas.width * finalHeight) / canvas.height;
+  }
+  
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  
+  // Center gambar di halaman
+  const xOffset = (pdfWidth - finalWidth) / 2;
+  const yOffset = margin;
+  
+  pdf.addImage(imgData, 'JPEG', xOffset, yOffset, finalWidth, finalHeight);
   pdf.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
 });
 
-// Export to PNG
-document.getElementById('exportPNG')?.addEventListener('click', async () => {
-  const exportArea = document.querySelector('.calendar-export-area');
-  const exportButtons = document.querySelector('.export-buttons');
-  
-  exportButtons.style.display = 'none';
-  exportArea.classList.add('exporting');
-  
-  const captureArea = document.querySelector('.calendar-export-area');
-  
-  const canvas = await html2canvas(captureArea, {
-    scale: 2,
-    backgroundColor: '#ffffff',
-    logging: false,
-    useCORS: true
-  });
-  
-  exportButtons.style.display = 'flex';
-  exportArea.classList.remove('exporting');
-  
-  const monthTitle = document.getElementById('currentMonth').textContent;
-  const link = document.createElement('a');
-  link.download = `Kalender-${monthTitle.replace(/\s+/g, '-')}.png`;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-});
