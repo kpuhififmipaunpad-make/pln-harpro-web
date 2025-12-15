@@ -1285,3 +1285,150 @@ body {
     padding: 0 1.5rem;
   }
 }
+
+
+/* ========== RESPONSIVE MOBILE - TAMBAHAN ========== */
+@media screen and (max-width: 768px) {
+  /* Container kalender */
+  .calendar-wrapper {
+    padding: 1rem;
+  }
+
+  /* Header bulan */
+  .calendar-header {
+    gap: 1rem;
+  }
+
+  .calendar-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .month-nav {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  /* Grid kalender */
+  .calendar-grid {
+    gap: 0.35rem;
+  }
+
+  /* Kotak tanggal */
+  .calendar-day {
+    min-height: 50px;
+    padding: 0.4rem 0.25rem;
+    font-size: 0.9rem;
+  }
+
+  /* Marker strip (kotak warna di atas) */
+  .day-markers,
+  .marker-strip {
+    height: 3px;
+    gap: 1px;
+  }
+
+  .marker-seg {
+    min-width: 3px;
+  }
+
+  /* Deskripsi singkat */
+  .day-desc-list {
+    font-size: 0.55rem;
+    margin-top: 2px;
+  }
+
+  /* Legend warna */
+  .calendar-legend {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .legend-item {
+    font-size: 0.75rem;
+  }
+
+  .legend-color {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Tombol export */
+  .export-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .btn-export {
+    width: 100%;
+    justify-content: center;
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* Form input agenda */
+  .activity-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Header - mobile */
+  .header-container {
+    padding: 0 1.5rem;
+  }
+
+  .logo-section {
+    gap: 0.8rem;
+  }
+
+  .nav-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .nav-menu a {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Extra small devices (dibawah 480px) */
+@media screen and (max-width: 480px) {
+  .calendar-day {
+    min-height: 45px;
+    font-size: 0.85rem;
+    padding: 0.3rem 0.2rem;
+  }
+
+  .day-desc-list {
+    font-size: 0.5rem;
+  }
+
+  .calendar-header h3 {
+    font-size: 1rem;
+  }
+
+  .month-nav {
+    width: 32px;
+    height: 32px;
+  }
+
+  .calendar-grid {
+    gap: 0.25rem;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .header-text h1 {
+    font-size: 0.9rem;
+  }
+
+  .header-text p {
+    font-size: 0.7rem;
+  }
+}
