@@ -29,9 +29,11 @@ async function loadActivities() {
     const month = currentDate.getMonth();
     const startOfMonth = `${year}-${String(month + 1).padStart(2, '0')}-01`;
 
+    console.log('🔄 Loading activities for:', startOfMonth);
     const res = await fetch(`/api/activities/month/${startOfMonth}`);
     
     if (!res.ok) {
+      console.error('❌ Load activities failed with status:', res.status);
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     
@@ -41,7 +43,7 @@ async function loadActivities() {
     activitiesData = data || [];
     console.log('📊 activitiesData length:', activitiesData.length);
   } catch (err) {
-    console.error('Error loading activities:', err);
+    console.error('❌ Error loading activities:', err);
     activitiesData = [];
   }
 }
@@ -238,7 +240,7 @@ function showActivitiesForDate(date) {
   }
 }
 
-// Form submission - IMPROVED ERROR HANDLING
+// Form submission - ENHANCED ERROR HANDLING
 document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -251,31 +253,36 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
 
   // Validasi frontend
   if (!formData.get('date')) {
-    alert('Pilih tanggal terlebih dahulu!');
+    alert('❌ Pilih tanggal terlebih dahulu!');
     return;
   }
 
   if (!formData.get('gi')) {
-    alert('Pilih lokasi GI!');
+    alert('❌ Pilih lokasi GI!');
     return;
   }
 
   if (workTypes.length === 0) {
-    alert('Pilih minimal 1 jenis pekerjaan!');
+    alert('❌ Pilih minimal 1 jenis pekerjaan!');
     return;
   }
 
   if (personnel.length === 0) {
-    alert('Pilih minimal 1 personel!');
+    alert('❌ Pilih minimal 1 personel!');
     return;
   }
 
   // Batasi deskripsi 10 kata
   let desc = formData.get('description') || '';
-  const words = desc.trim().split(/\s+/);
+  desc = desc.trim();
+  const words = desc.split(/\s+/).filter(w => w.length > 0);
   if (words.length > 10) {
     desc = words.slice(0, 10).join(' ');
   }
+
+  // Bersihkan notes
+  let notes = formData.get('notes') || '';
+  notes = notes.trim();
 
   const data = {
     date: formData.get('date'),
@@ -283,25 +290,43 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
     workTypes: workTypes,
     personnel: personnel,
     description: desc,
-    notes: formData.get('notes') || ''
+    notes: notes
   };
 
-  console.log('📤 Sending data to /activities:', JSON.stringify(data, null, 2));
+  console.log('📤 Sending data to /activities:');
+  console.log(JSON.stringify(data, null, 2));
+  console.log('📤 Data types:', {
+    date: typeof data.date,
+    gi: typeof data.gi,
+    workTypes: Array.isArray(data.workTypes) ? 'array' : typeof data.workTypes,
+    personnel: Array.isArray(data.personnel) ? 'array' : typeof data.personnel,
+    description: typeof data.description,
+    notes: typeof data.notes
+  });
 
   try {
     const response = await fetch('/activities', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
       body: JSON.stringify(data)
     });
 
     console.log('📥 Response status:', response.status);
+    console.log('📥 Response statusText:', response.statusText);
+    console.log('📥 Response headers:', [...response.headers.entries()]);
 
     if (response.ok) {
-      const result = await response.json();
-      console.log('✅ Success response:', result);
+      let result;
+      try {
+        result = await response.json();
+        console.log('✅ Success response:', result);
+      } catch (e) {
+        console.log('✅ Success but no JSON response');
+      }
+      
       alert('✅ Agenda berhasil disimpan!');
 
       await loadActivities();
@@ -310,29 +335,71 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
       e.target.reset();
       document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
         cb.checked = false;
-        cb.closest('.checkbox-label')?.classList.remove('is-checked');
+        const label = cb.closest('.checkbox-label');
+        if (label) label.classList.remove('is-checked');
       });
 
       if (selectedDate) {
         showActivitiesForDate(selectedDate);
       }
     } else {
-      // Tangkap error detail dari server
+      // ENHANCED ERROR LOGGING
       let errorMessage = 'Gagal menyimpan agenda';
+      let errorDetails = {};
+      
       try {
-        const errorData = await response.json();
-        console.error('❌ Server error response:', errorData);
-        errorMessage = errorData.message || errorData.error || errorMessage;
+        const contentType = response.headers.get('content-type');
+        console.log('📥 Error content-type:', contentType);
+        
+        if (contentType && contentType.includes('application/json')) {
+          errorDetails = await response.json();
+          console.error('❌ Server error response (JSON):', errorDetails);
+          console.error('❌ Error object keys:', Object.keys(errorDetails));
+          console.error('❌ Error object values:', Object.values(errorDetails));
+          console.error('❌ Error stringified:', JSON.stringify(errorDetails, null, 2));
+          
+          // Cari pesan error di berbagai kemungkinan property
+          errorMessage = errorDetails.message || 
+                        errorDetails.error || 
+                        errorDetails.msg || 
+                        errorDetails.detail ||
+                        errorDetails.errors ||
+                        JSON.stringify(errorDetails);
+        } else {
+          const errorText = await response.text();
+          console.error('❌ Server error (text):', errorText);
+          errorMessage = errorText || errorMessage;
+        }
       } catch (parseError) {
-        const errorText = await response.text();
-        console.error('❌ Server error (text):', errorText);
-        errorMessage = errorText || errorMessage;
+        console.error('❌ Parse error:', parseError);
+        try {
+          const errorText = await response.text();
+          console.error('❌ Raw error text:', errorText);
+          errorMessage = errorText || errorMessage;
+        } catch (e) {
+          console.error('❌ Could not read response body');
+        }
       }
-      alert(`❌ ${errorMessage}`);
+      
+      // Tampilkan error lebih detail
+      const errorDisplay = typeof errorMessage === 'object' 
+        ? JSON.stringify(errorMessage, null, 2) 
+        : errorMessage;
+      
+      alert(`❌ Error ${response.status}: ${errorDisplay}`);
+      console.error('❌ FULL ERROR DETAILS:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorMessage: errorMessage,
+        sentData: data
+      });
     }
   } catch (err) {
     console.error('❌ Network or fetch error:', err);
-    alert(`Terjadi kesalahan koneksi: ${err.message}`);
+    console.error('❌ Error name:', err.name);
+    console.error('❌ Error message:', err.message);
+    console.error('❌ Error stack:', err.stack);
+    alert(`❌ Terjadi kesalahan koneksi: ${err.message}`);
   }
 });
 
@@ -340,10 +407,14 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
 async function deleteActivity(id) {
   if (!confirm('Yakin ingin menghapus agenda ini?')) return;
 
+  console.log('🗑️ Deleting activity:', id);
+
   try {
     const response = await fetch(`/activities/${id}`, {
       method: 'DELETE'
     });
+
+    console.log('📥 Delete response status:', response.status);
 
     if (response.ok) {
       alert('✅ Agenda berhasil dihapus!');
@@ -359,15 +430,17 @@ async function deleteActivity(id) {
       try {
         const errorData = await response.json();
         console.error('❌ Delete error:', errorData);
-        errorMessage = errorData.message || errorMessage;
+        errorMessage = errorData.message || errorData.error || errorMessage;
       } catch (e) {
-        console.error('❌ Delete error (no JSON):', await response.text());
+        const errorText = await response.text();
+        console.error('❌ Delete error (text):', errorText);
+        errorMessage = errorText || errorMessage;
       }
       alert(`❌ ${errorMessage}`);
     }
   } catch (err) {
     console.error('❌ Delete network error:', err);
-    alert(`Terjadi kesalahan: ${err.message}`);
+    alert(`❌ Terjadi kesalahan: ${err.message}`);
   }
 }
 
@@ -387,6 +460,8 @@ document.getElementById('nextMonth').addEventListener('click', async () => {
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('🚀 Calendar initializing...');
+  console.log('🚀 Current date:', currentDate);
+  
   await loadActivities();
   renderCalendar();
 
@@ -406,6 +481,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   });
+  
+  console.log('✅ Calendar initialized successfully');
 });
 
 // Export to PDF
@@ -415,11 +492,12 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
     const exportButtons = document.querySelector('.export-buttons');
     
     if (!exportArea || !exportButtons) {
-      console.error('Element tidak ditemukan');
-      alert('Elemen export tidak ditemukan!');
+      console.error('❌ Element tidak ditemukan');
+      alert('❌ Elemen export tidak ditemukan!');
       return;
     }
     
+    console.log('📄 Starting PDF export...');
     exportButtons.style.display = 'none';
     exportArea.classList.add('exporting');
     
@@ -462,9 +540,10 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
     pdf.addImage(imgData, 'JPEG', xOffset, yOffset, finalWidth, finalHeight);
     pdf.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
     
+    console.log('✅ PDF exported successfully');
   } catch (error) {
     console.error('❌ Error saat export PDF:', error);
-    alert(`Gagal export PDF: ${error.message}`);
+    alert(`❌ Gagal export PDF: ${error.message}`);
   }
 });
 
@@ -475,11 +554,12 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
     const exportButtons = document.querySelector('.export-buttons');
     
     if (!exportArea || !exportButtons) {
-      console.error('Element tidak ditemukan');
-      alert('Elemen export tidak ditemukan!');
+      console.error('❌ Element tidak ditemukan');
+      alert('❌ Elemen export tidak ditemukan!');
       return;
     }
     
+    console.log('🖼️ Starting PNG export...');
     exportButtons.style.display = 'none';
     exportArea.classList.add('exporting');
     
@@ -499,8 +579,9 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
     link.href = canvas.toDataURL('image/png');
     link.click();
     
+    console.log('✅ PNG exported successfully');
   } catch (error) {
     console.error('❌ Error saat export PNG:', error);
-    alert(`Gagal export PNG: ${error.message}`);
+    alert(`❌ Gagal export PNG: ${error.message}`);
   }
 });
