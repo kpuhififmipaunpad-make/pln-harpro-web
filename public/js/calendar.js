@@ -507,7 +507,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   console.log('✅ Calendar initialized successfully');
 });
 
-// Export to PDF - WITH TOAST
+// Export to PDF - HIDE SELECTED STATE
 document.getElementById('exportPDF')?.addEventListener('click', async () => {
   try {
     const exportArea = document.querySelector('.calendar-export-area');
@@ -522,8 +522,16 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
     console.log('📄 Starting PDF export...');
     showToast('Mengekspor ke PDF...', 'info', 2000);
     
+    // Sembunyikan buttons dan selected state
     exportButtons.style.display = 'none';
     exportArea.classList.add('exporting');
+    
+    // Simpan dan hapus class selected sementara
+    const selectedCell = document.querySelector('.calendar-day.selected');
+    const wasSelected = !!selectedCell;
+    if (selectedCell) {
+      selectedCell.classList.remove('selected');
+    }
     
     const canvas = await html2canvas(exportArea, {
       scale: 1.5,
@@ -532,8 +540,12 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
       useCORS: true
     });
     
+    // Kembalikan selected state
     exportButtons.style.display = 'flex';
     exportArea.classList.remove('exporting');
+    if (wasSelected && selectedCell) {
+      selectedCell.classList.add('selected');
+    }
     
     const monthTitle = document.getElementById('currentMonth').textContent;
     const imgData = canvas.toDataURL('image/jpeg', 0.85);
@@ -569,10 +581,17 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
   } catch (error) {
     console.error('❌ Error saat export PDF:', error);
     showToast(`Gagal export PDF: ${error.message}`, 'error');
+    
+    // Pastikan kembalikan UI ke normal jika error
+    const exportButtons = document.querySelector('.export-buttons');
+    const exportArea = document.querySelector('.calendar-export-area');
+    const selectedCell = document.querySelector('.calendar-day');
+    if (exportButtons) exportButtons.style.display = 'flex';
+    if (exportArea) exportArea.classList.remove('exporting');
   }
 });
 
-// Export to PNG - WITH TOAST
+// Export to PNG - HIDE SELECTED STATE
 document.getElementById('exportPNG')?.addEventListener('click', async () => {
   try {
     const exportArea = document.querySelector('.calendar-export-area');
@@ -587,8 +606,16 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
     console.log('🖼️ Starting PNG export...');
     showToast('Mengekspor ke PNG...', 'info', 2000);
     
+    // Sembunyikan buttons dan selected state
     exportButtons.style.display = 'none';
     exportArea.classList.add('exporting');
+    
+    // Simpan dan hapus class selected sementara
+    const selectedCell = document.querySelector('.calendar-day.selected');
+    const wasSelected = !!selectedCell;
+    if (selectedCell) {
+      selectedCell.classList.remove('selected');
+    }
     
     const canvas = await html2canvas(exportArea, {
       scale: 2,
@@ -597,8 +624,12 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
       useCORS: true
     });
     
+    // Kembalikan selected state
     exportButtons.style.display = 'flex';
     exportArea.classList.remove('exporting');
+    if (wasSelected && selectedCell) {
+      selectedCell.classList.add('selected');
+    }
     
     const monthTitle = document.getElementById('currentMonth').textContent;
     const link = document.createElement('a');
@@ -611,5 +642,11 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
   } catch (error) {
     console.error('❌ Error saat export PNG:', error);
     showToast(`Gagal export PNG: ${error.message}`, 'error');
+    
+    // Pastikan kembalikan UI ke normal jika error
+    const exportButtons = document.querySelector('.export-buttons');
+    const exportArea = document.querySelector('.calendar-export-area');
+    if (exportButtons) exportButtons.style.display = 'flex';
+    if (exportArea) exportArea.classList.remove('exporting');
   }
 });

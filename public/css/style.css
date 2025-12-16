@@ -1557,3 +1557,10 @@ body {
 .calendar-day.selected {
   transform: translateZ(0);
 }
+
+/* Sembunyikan selected state saat export */
+.exporting .calendar-day.selected {
+  background-color: white !important;
+  border-color: #e5e7eb !important;
+  color: inherit !important;
+}
