@@ -627,6 +627,7 @@ body {
 
 .calendar-day.has-activity {
   background: linear-gradient(135deg, rgba(0, 162, 185, 0.1) 0%, rgba(0, 162, 185, 0.05) 100%);
+  color: #00a2b9;
   border-color: var(--pln-blue);
 }
 
