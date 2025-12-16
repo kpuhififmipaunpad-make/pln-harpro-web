@@ -1,3 +1,43 @@
+// ==================== TOAST NOTIFICATION SYSTEM ====================
+function showToast(message, type = 'info', duration = 3000) {
+  // Buat container toast jika belum ada
+  let toastContainer = document.getElementById('toast-container');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'toast-container';
+    toastContainer.className = 'toast-container';
+    document.body.appendChild(toastContainer);
+  }
+
+  // Buat elemen toast
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  
+  // Icon berdasarkan tipe
+  const icons = {
+    success: '✓',
+    error: '✕',
+    warning: '⚠',
+    info: 'ℹ'
+  };
+  
+  toast.innerHTML = `
+    <span class="toast-icon">${icons[type] || icons.info}</span>
+    <span class="toast-message">${message}</span>
+  `;
+  
+  toastContainer.appendChild(toast);
+  
+  // Trigger animation
+  setTimeout(() => toast.classList.add('toast-show'), 10);
+  
+  // Auto remove
+  setTimeout(() => {
+    toast.classList.remove('toast-show');
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
 // Ambil data activities dari window object
 var activitiesData = window.activitiesData || [];
 console.log('Initial activities loaded:', activitiesData.length);
@@ -22,7 +62,7 @@ function getLocalDateString(date) {
   return `${year}-${month}-${day}`;
 }
 
-// Load activities untuk bulan aktif
+// Load activities untuk bulan aktif - OPTIMIZED
 async function loadActivities() {
   try {
     const year = currentDate.getFullYear();
@@ -30,6 +70,11 @@ async function loadActivities() {
     const startOfMonth = `${year}-${String(month + 1).padStart(2, '0')}-01`;
 
     console.log('🔄 Loading activities for:', startOfMonth);
+    
+    // Tambahkan loading indicator
+    const grid = document.getElementById('calendarGrid');
+    if (grid) grid.style.opacity = '0.6';
+    
     const res = await fetch(`/api/activities/month/${startOfMonth}`);
     
     if (!res.ok) {
@@ -42,12 +87,101 @@ async function loadActivities() {
     console.log('🔄 API month data:', data);
     activitiesData = data || [];
     console.log('📊 activitiesData length:', activitiesData.length);
+    
+    // Hilangkan loading indicator
+    if (grid) grid.style.opacity = '1';
   } catch (err) {
     console.error('❌ Error loading activities:', err);
     activitiesData = [];
+    const grid = document.getElementById('calendarGrid');
+    if (grid) grid.style.opacity = '1';
+    showToast('Gagal memuat data kegiatan', 'error');
   }
 }
 
+// OPTIMIZED: Create day cell function
+function createDayCell(year, month, day, today) {
+  const dayCell = document.createElement('div');
+  dayCell.className = 'calendar-day';
+  dayCell.textContent = day;
+
+  const cellDate = new Date(year, month, day);
+  const dateStr = getLocalDateString(cellDate);
+
+  if (cellDate.toDateString() === today.toDateString()) {
+    dayCell.classList.add('today');
+  }
+
+  // Marker strip & deskripsi
+  const markerStrip = document.createElement('div');
+  markerStrip.className = 'marker-strip';
+
+  const segRutin = document.createElement('div');
+  segRutin.className = 'marker-seg marker-rutin';
+  const segNon = document.createElement('div');
+  segNon.className = 'marker-seg marker-non';
+  const segPihak = document.createElement('div');
+  segPihak.className = 'marker-seg marker-pihak';
+  const segLibur = document.createElement('div');
+  segLibur.className = 'marker-seg marker-libur';
+
+  // Gunakan append untuk performa lebih baik
+  markerStrip.append(segRutin, segNon, segPihak, segLibur);
+
+  const descList = document.createElement('div');
+  descList.className = 'day-desc-list';
+
+  dayCell.append(markerStrip, descList);
+
+  // Ambil semua kegiatan di tanggal ini
+  const activitiesForDay = activitiesData.filter(activity => {
+    const activityDate = getLocalDateString(activity.date);
+    return activityDate === dateStr;
+  });
+
+  if (activitiesForDay.length > 0) {
+    dayCell.classList.add('has-activity', 'has-marker');
+
+    const allTypes = new Set(activitiesForDay.flatMap(a => a.workTypes || []));
+
+    // Set opacity lebih efisien
+    segRutin.style.opacity = allTypes.has('Rutin') ? '1' : '0';
+    segNon.style.opacity = allTypes.has('Non Rutin') ? '1' : '0';
+    segPihak.style.opacity = allTypes.has('Pihak Lain') ? '1' : '0';
+    segLibur.style.opacity = allTypes.has('Libur Nasional') ? '1' : '0';
+
+    // deskripsi: ambil maksimal 2 activity
+    const fragment = document.createDocumentFragment();
+    activitiesForDay.slice(0, 2).forEach(activity => {
+      const rawDesc = (activity.description || '').trim();
+      if (!rawDesc) return;
+
+      const words = rawDesc.split(/\s+/).slice(0, 6);
+      const shortDesc = words.join(' ');
+
+      const descItem = document.createElement('div');
+      descItem.classList.add('day-desc-item');
+
+      // tentukan warna berdasarkan jenis pekerjaan
+      const types = activity.workTypes || [];
+      if (types.includes('Rutin')) descItem.classList.add('day-desc-rutin');
+      else if (types.includes('Non Rutin')) descItem.classList.add('day-desc-non');
+      else if (types.includes('Pihak Lain')) descItem.classList.add('day-desc-pihak');
+      else if (types.includes('Libur Nasional')) descItem.classList.add('day-desc-libur');
+
+      descItem.textContent = shortDesc;
+      fragment.appendChild(descItem);
+    });
+    descList.appendChild(fragment);
+  }
+
+  // Event listener
+  dayCell.addEventListener('click', () => selectDate(cellDate, dayCell), { passive: true });
+  
+  return dayCell;
+}
+
+// OPTIMIZED: Render calendar with DocumentFragment
 function renderCalendar() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -56,14 +190,16 @@ function renderCalendar() {
     `${monthNames[month]} ${year}`;
 
   const grid = document.getElementById('calendarGrid');
-  grid.innerHTML = '';
+  
+  // Gunakan DocumentFragment untuk performa optimal
+  const fragment = document.createDocumentFragment();
 
   // Header hari
   dayNames.forEach(day => {
     const dayHeader = document.createElement('div');
     dayHeader.className = 'calendar-day header';
     dayHeader.textContent = day;
-    grid.appendChild(dayHeader);
+    fragment.appendChild(dayHeader);
   });
 
   const firstDay = new Date(year, month, 1).getDay();
@@ -75,122 +211,48 @@ function renderCalendar() {
     const dayCell = document.createElement('div');
     dayCell.className = 'calendar-day other-month';
     dayCell.textContent = daysInPrevMonth - i;
-    grid.appendChild(dayCell);
+    fragment.appendChild(dayCell);
   }
 
-  // Tanggal bulan aktif
+  // Tanggal bulan aktif - gunakan fungsi createDayCell
   const today = new Date();
   for (let day = 1; day <= daysInMonth; day++) {
-    const dayCell = document.createElement('div');
-    dayCell.className = 'calendar-day';
-    dayCell.textContent = day;
-
-    const cellDate = new Date(year, month, day);
-    const dateStr = getLocalDateString(cellDate);
-
-    if (cellDate.toDateString() === today.toDateString()) {
-      dayCell.classList.add('today');
-    }
-
-    // Marker strip & deskripsi
-    const markerStrip = document.createElement('div');
-    markerStrip.className = 'marker-strip';
-
-    const segRutin = document.createElement('div');
-    segRutin.className = 'marker-seg marker-rutin';
-    const segNon = document.createElement('div');
-    segNon.className = 'marker-seg marker-non';
-    const segPihak = document.createElement('div');
-    segPihak.className = 'marker-seg marker-pihak';
-    const segLibur = document.createElement('div');
-    segLibur.className = 'marker-seg marker-libur';
-
-    markerStrip.appendChild(segRutin);
-    markerStrip.appendChild(segNon);
-    markerStrip.appendChild(segPihak);
-    markerStrip.appendChild(segLibur);
-
-    const descList = document.createElement('div');
-    descList.className = 'day-desc-list';
-
-    dayCell.appendChild(markerStrip);
-    dayCell.appendChild(descList);
-
-    // Ambil semua kegiatan di tanggal ini
-    const activitiesForDay = activitiesData.filter(activity => {
-      const activityDate = getLocalDateString(activity.date);
-      return activityDate === dateStr;
-    });
-
-    if (activitiesForDay.length > 0) {
-      dayCell.classList.add('has-activity', 'has-marker');
-
-      const allTypes = new Set(activitiesForDay.flatMap(a => a.workTypes || []));
-
-      // reset segmen
-      segRutin.style.opacity = '0';
-      segNon.style.opacity   = '0';
-      segPihak.style.opacity = '0';
-      segLibur.style.opacity = '0';
-
-      if (allTypes.has('Rutin'))          segRutin.style.opacity = '1';
-      if (allTypes.has('Non Rutin'))      segNon.style.opacity   = '1';
-      if (allTypes.has('Pihak Lain'))     segPihak.style.opacity = '1';
-      if (allTypes.has('Libur Nasional')) segLibur.style.opacity = '1';
-
-      // deskripsi: ambil maksimal 2 activity
-      descList.innerHTML = '';
-      activitiesForDay.slice(0, 2).forEach(activity => {
-        const rawDesc = (activity.description || '').trim();
-        if (!rawDesc) return;
-
-        const words = rawDesc.split(/\s+/).slice(0, 6);
-        const shortDesc = words.join(' ');
-
-        const descItem = document.createElement('div');
-        descItem.classList.add('day-desc-item');
-
-        // tentukan warna berdasarkan jenis pekerjaan
-        const types = activity.workTypes || [];
-        if (types.includes('Rutin')) descItem.classList.add('day-desc-rutin');
-        else if (types.includes('Non Rutin')) descItem.classList.add('day-desc-non');
-        else if (types.includes('Pihak Lain')) descItem.classList.add('day-desc-pihak');
-        else if (types.includes('Libur Nasional')) descItem.classList.add('day-desc-libur');
-
-        descItem.textContent = shortDesc;
-        descList.appendChild(descItem);
-      });
-    }
-
-    dayCell.addEventListener('click', () => selectDate(cellDate, dayCell));
-    grid.appendChild(dayCell);
+    const dayCell = createDayCell(year, month, day, today);
+    fragment.appendChild(dayCell);
   }
 
   // Tanggal bulan berikutnya
-  const totalCells = grid.children.length - 7;
+  const totalCells = fragment.children.length - 7;
   const remainingCells = 35 - totalCells;
   for (let day = 1; day <= remainingCells; day++) {
     const dayCell = document.createElement('div');
     dayCell.className = 'calendar-day other-month';
     dayCell.textContent = day;
-    grid.appendChild(dayCell);
+    fragment.appendChild(dayCell);
   }
+
+  // Clear dan append sekali saja - JAUH LEBIH CEPAT
+  grid.innerHTML = '';
+  grid.appendChild(fragment);
 }
 
 function selectDate(date, element) {
-  document.querySelectorAll('.calendar-day').forEach(day => {
-    day.classList.remove('selected');
+  // Batch DOM updates
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.calendar-day.selected').forEach(day => {
+      day.classList.remove('selected');
+    });
+
+    element.classList.add('selected');
+    selectedDate = date;
+
+    const dateStr = getLocalDateString(date);
+    document.getElementById('selectedDate').value = dateStr;
+    document.getElementById('selectedDateDisplay').textContent =
+      `${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+
+    showActivitiesForDate(date);
   });
-
-  element.classList.add('selected');
-  selectedDate = date;
-
-  const dateStr = getLocalDateString(date);
-  document.getElementById('selectedDate').value = dateStr;
-  document.getElementById('selectedDateDisplay').textContent =
-    `${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-
-  showActivitiesForDate(date);
 }
 
 function showActivitiesForDate(date) {
@@ -240,7 +302,7 @@ function showActivitiesForDate(date) {
   }
 }
 
-// Form submission - ENHANCED ERROR HANDLING
+// Form submission - WITH TOAST NOTIFICATIONS
 document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -253,22 +315,22 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
 
   // Validasi frontend
   if (!formData.get('date')) {
-    alert('❌ Pilih tanggal terlebih dahulu!');
+    showToast('Pilih tanggal terlebih dahulu!', 'warning');
     return;
   }
 
   if (!formData.get('gi')) {
-    alert('❌ Pilih lokasi GI!');
+    showToast('Pilih lokasi GI!', 'warning');
     return;
   }
 
   if (workTypes.length === 0) {
-    alert('❌ Pilih minimal 1 jenis pekerjaan!');
+    showToast('Pilih minimal 1 jenis pekerjaan!', 'warning');
     return;
   }
 
   if (personnel.length === 0) {
-    alert('❌ Pilih minimal 1 personel!');
+    showToast('Pilih minimal 1 personel!', 'warning');
     return;
   }
 
@@ -293,16 +355,7 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
     notes: notes
   };
 
-  console.log('📤 Sending data to /activities:');
-  console.log(JSON.stringify(data, null, 2));
-  console.log('📤 Data types:', {
-    date: typeof data.date,
-    gi: typeof data.gi,
-    workTypes: Array.isArray(data.workTypes) ? 'array' : typeof data.workTypes,
-    personnel: Array.isArray(data.personnel) ? 'array' : typeof data.personnel,
-    description: typeof data.description,
-    notes: typeof data.notes
-  });
+  console.log('📤 Sending data to /activities:', JSON.stringify(data, null, 2));
 
   try {
     const response = await fetch('/activities', {
@@ -315,8 +368,6 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
     });
 
     console.log('📥 Response status:', response.status);
-    console.log('📥 Response statusText:', response.statusText);
-    console.log('📥 Response headers:', [...response.headers.entries()]);
 
     if (response.ok) {
       let result;
@@ -327,7 +378,7 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
         console.log('✅ Success but no JSON response');
       }
       
-      alert('✅ Agenda berhasil disimpan!');
+      showToast('Agenda berhasil disimpan!', 'success');
 
       await loadActivities();
       renderCalendar();
@@ -343,28 +394,20 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
         showActivitiesForDate(selectedDate);
       }
     } else {
-      // ENHANCED ERROR LOGGING
       let errorMessage = 'Gagal menyimpan agenda';
-      let errorDetails = {};
       
       try {
         const contentType = response.headers.get('content-type');
-        console.log('📥 Error content-type:', contentType);
         
         if (contentType && contentType.includes('application/json')) {
-          errorDetails = await response.json();
+          const errorDetails = await response.json();
           console.error('❌ Server error response (JSON):', errorDetails);
-          console.error('❌ Error object keys:', Object.keys(errorDetails));
-          console.error('❌ Error object values:', Object.values(errorDetails));
-          console.error('❌ Error stringified:', JSON.stringify(errorDetails, null, 2));
           
-          // Cari pesan error di berbagai kemungkinan property
           errorMessage = errorDetails.message || 
                         errorDetails.error || 
                         errorDetails.msg || 
                         errorDetails.detail ||
-                        errorDetails.errors ||
-                        JSON.stringify(errorDetails);
+                        'Gagal menyimpan agenda';
         } else {
           const errorText = await response.text();
           console.error('❌ Server error (text):', errorText);
@@ -372,38 +415,17 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
         }
       } catch (parseError) {
         console.error('❌ Parse error:', parseError);
-        try {
-          const errorText = await response.text();
-          console.error('❌ Raw error text:', errorText);
-          errorMessage = errorText || errorMessage;
-        } catch (e) {
-          console.error('❌ Could not read response body');
-        }
       }
       
-      // Tampilkan error lebih detail
-      const errorDisplay = typeof errorMessage === 'object' 
-        ? JSON.stringify(errorMessage, null, 2) 
-        : errorMessage;
-      
-      alert(`❌ Error ${response.status}: ${errorDisplay}`);
-      console.error('❌ FULL ERROR DETAILS:', {
-        status: response.status,
-        statusText: response.statusText,
-        errorMessage: errorMessage,
-        sentData: data
-      });
+      showToast(errorMessage, 'error', 4000);
     }
   } catch (err) {
     console.error('❌ Network or fetch error:', err);
-    console.error('❌ Error name:', err.name);
-    console.error('❌ Error message:', err.message);
-    console.error('❌ Error stack:', err.stack);
-    alert(`❌ Terjadi kesalahan koneksi: ${err.message}`);
+    showToast(`Terjadi kesalahan koneksi: ${err.message}`, 'error', 4000);
   }
 });
 
-// Delete activity - IMPROVED ERROR HANDLING
+// Delete activity - WITH TOAST
 async function deleteActivity(id) {
   if (!confirm('Yakin ingin menghapus agenda ini?')) return;
 
@@ -417,7 +439,7 @@ async function deleteActivity(id) {
     console.log('📥 Delete response status:', response.status);
 
     if (response.ok) {
-      alert('✅ Agenda berhasil dihapus!');
+      showToast('Agenda berhasil dihapus!', 'success');
 
       await loadActivities();
       renderCalendar();
@@ -436,11 +458,11 @@ async function deleteActivity(id) {
         console.error('❌ Delete error (text):', errorText);
         errorMessage = errorText || errorMessage;
       }
-      alert(`❌ ${errorMessage}`);
+      showToast(errorMessage, 'error');
     }
   } catch (err) {
     console.error('❌ Delete network error:', err);
-    alert(`❌ Terjadi kesalahan: ${err.message}`);
+    showToast(`Terjadi kesalahan: ${err.message}`, 'error');
   }
 }
 
@@ -485,7 +507,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   console.log('✅ Calendar initialized successfully');
 });
 
-// Export to PDF
+// Export to PDF - WITH TOAST
 document.getElementById('exportPDF')?.addEventListener('click', async () => {
   try {
     const exportArea = document.querySelector('.calendar-export-area');
@@ -493,11 +515,13 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
     
     if (!exportArea || !exportButtons) {
       console.error('❌ Element tidak ditemukan');
-      alert('❌ Elemen export tidak ditemukan!');
+      showToast('Elemen export tidak ditemukan!', 'error');
       return;
     }
     
     console.log('📄 Starting PDF export...');
+    showToast('Mengekspor ke PDF...', 'info', 2000);
+    
     exportButtons.style.display = 'none';
     exportArea.classList.add('exporting');
     
@@ -541,13 +565,14 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
     pdf.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
     
     console.log('✅ PDF exported successfully');
+    showToast('PDF berhasil diunduh!', 'success');
   } catch (error) {
     console.error('❌ Error saat export PDF:', error);
-    alert(`❌ Gagal export PDF: ${error.message}`);
+    showToast(`Gagal export PDF: ${error.message}`, 'error');
   }
 });
 
-// Export to PNG
+// Export to PNG - WITH TOAST
 document.getElementById('exportPNG')?.addEventListener('click', async () => {
   try {
     const exportArea = document.querySelector('.calendar-export-area');
@@ -555,11 +580,13 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
     
     if (!exportArea || !exportButtons) {
       console.error('❌ Element tidak ditemukan');
-      alert('❌ Elemen export tidak ditemukan!');
+      showToast('Elemen export tidak ditemukan!', 'error');
       return;
     }
     
     console.log('🖼️ Starting PNG export...');
+    showToast('Mengekspor ke PNG...', 'info', 2000);
+    
     exportButtons.style.display = 'none';
     exportArea.classList.add('exporting');
     
@@ -580,8 +607,9 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
     link.click();
     
     console.log('✅ PNG exported successfully');
+    showToast('PNG berhasil diunduh!', 'success');
   } catch (error) {
     console.error('❌ Error saat export PNG:', error);
-    alert(`❌ Gagal export PNG: ${error.message}`);
+    showToast(`Gagal export PNG: ${error.message}`, 'error');
   }
 });
