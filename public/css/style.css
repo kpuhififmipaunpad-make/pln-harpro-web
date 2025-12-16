@@ -1336,7 +1336,8 @@ body {
   /* Deskripsi singkat */
   .day-desc-list {
     font-size: 0.55rem;
-    margin-top: 2px;
+    margin-top: -2px;
+    padding-top: 0;
   }
 
   /* Legend warna */
