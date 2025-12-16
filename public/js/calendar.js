@@ -30,6 +30,11 @@ async function loadActivities() {
     const startOfMonth = `${year}-${String(month + 1).padStart(2, '0')}-01`;
 
     const res = await fetch(`/api/activities/month/${startOfMonth}`);
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
     const data = await res.json();
 
     console.log('🔄 API month data:', data);
@@ -37,6 +42,7 @@ async function loadActivities() {
     console.log('📊 activitiesData length:', activitiesData.length);
   } catch (err) {
     console.error('Error loading activities:', err);
+    activitiesData = [];
   }
 }
 
@@ -136,13 +142,13 @@ function renderCalendar() {
         const rawDesc = (activity.description || '').trim();
         if (!rawDesc) return;
 
-        const words = rawDesc.split(/\s+/).slice(0, 6); // lebih pendek biar muat 2 baris
+        const words = rawDesc.split(/\s+/).slice(0, 6);
         const shortDesc = words.join(' ');
 
         const descItem = document.createElement('div');
         descItem.classList.add('day-desc-item');
 
-        // tentukan warna berdasarkan jenis pekerjaan (ambil prioritas pertama)
+        // tentukan warna berdasarkan jenis pekerjaan
         const types = activity.workTypes || [];
         if (types.includes('Rutin')) descItem.classList.add('day-desc-rutin');
         else if (types.includes('Non Rutin')) descItem.classList.add('day-desc-non');
@@ -158,7 +164,7 @@ function renderCalendar() {
     grid.appendChild(dayCell);
   }
 
-  // Tanggal bulan berikutnya (isi sampai 5 baris)
+  // Tanggal bulan berikutnya
   const totalCells = grid.children.length - 7;
   const remainingCells = 35 - totalCells;
   for (let day = 1; day <= remainingCells; day++) {
@@ -232,7 +238,7 @@ function showActivitiesForDate(date) {
   }
 }
 
-// Form submission
+// Form submission - IMPROVED ERROR HANDLING
 document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -243,6 +249,7 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
   const personnel = Array.from(document.querySelectorAll('input[name="personnel"]:checked'))
     .map(cb => cb.value);
 
+  // Validasi frontend
   if (!formData.get('date')) {
     alert('Pilih tanggal terlebih dahulu!');
     return;
@@ -263,6 +270,7 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
     return;
   }
 
+  // Batasi deskripsi 10 kata
   let desc = formData.get('description') || '';
   const words = desc.trim().split(/\s+/);
   if (words.length > 10) {
@@ -275,8 +283,10 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
     workTypes: workTypes,
     personnel: personnel,
     description: desc,
-    notes: formData.get('notes')
+    notes: formData.get('notes') || ''
   };
+
+  console.log('📤 Sending data to /activities:', JSON.stringify(data, null, 2));
 
   try {
     const response = await fetch('/activities', {
@@ -287,28 +297,46 @@ document.getElementById('scheduleForm').addEventListener('submit', async (e) => 
       body: JSON.stringify(data)
     });
 
+    console.log('📥 Response status:', response.status);
+
     if (response.ok) {
+      const result = await response.json();
+      console.log('✅ Success response:', result);
       alert('✅ Agenda berhasil disimpan!');
 
       await loadActivities();
       renderCalendar();
 
       e.target.reset();
-      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+        cb.closest('.checkbox-label')?.classList.remove('is-checked');
+      });
 
       if (selectedDate) {
         showActivitiesForDate(selectedDate);
       }
     } else {
-      alert('❌ Gagal menyimpan agenda!');
+      // Tangkap error detail dari server
+      let errorMessage = 'Gagal menyimpan agenda';
+      try {
+        const errorData = await response.json();
+        console.error('❌ Server error response:', errorData);
+        errorMessage = errorData.message || errorData.error || errorMessage;
+      } catch (parseError) {
+        const errorText = await response.text();
+        console.error('❌ Server error (text):', errorText);
+        errorMessage = errorText || errorMessage;
+      }
+      alert(`❌ ${errorMessage}`);
     }
   } catch (err) {
-    console.error(err);
-    alert('Terjadi kesalahan!');
+    console.error('❌ Network or fetch error:', err);
+    alert(`Terjadi kesalahan koneksi: ${err.message}`);
   }
 });
 
-// Delete activity
+// Delete activity - IMPROVED ERROR HANDLING
 async function deleteActivity(id) {
   if (!confirm('Yakin ingin menghapus agenda ini?')) return;
 
@@ -327,11 +355,19 @@ async function deleteActivity(id) {
         showActivitiesForDate(selectedDate);
       }
     } else {
-      alert('❌ Gagal menghapus agenda!');
+      let errorMessage = 'Gagal menghapus agenda';
+      try {
+        const errorData = await response.json();
+        console.error('❌ Delete error:', errorData);
+        errorMessage = errorData.message || errorMessage;
+      } catch (e) {
+        console.error('❌ Delete error (no JSON):', await response.text());
+      }
+      alert(`❌ ${errorMessage}`);
     }
   } catch (err) {
-    console.error(err);
-    alert('Terjadi kesalahan!');
+    console.error('❌ Delete network error:', err);
+    alert(`Terjadi kesalahan: ${err.message}`);
   }
 }
 
@@ -354,11 +390,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadActivities();
   renderCalendar();
 
-  // === SYNC CHECKBOX STATE DENGAN CLASS .is-checked ===
+  // Sync checkbox state dengan class .is-checked
   document.querySelectorAll('.checkbox-label input[type="checkbox"]').forEach(input => {
     const label = input.closest('.checkbox-label');
 
-    // state awal
     if (input.checked) {
       label.classList.add('is-checked');
     }
@@ -381,6 +416,7 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
     
     if (!exportArea || !exportButtons) {
       console.error('Element tidak ditemukan');
+      alert('Elemen export tidak ditemukan!');
       return;
     }
     
@@ -427,8 +463,8 @@ document.getElementById('exportPDF')?.addEventListener('click', async () => {
     pdf.save(`Kalender-${monthTitle.replace(/\s+/g, '-')}.pdf`);
     
   } catch (error) {
-    console.error('Error saat export PDF:', error);
-    alert('Gagal export PDF. Cek console untuk detail.');
+    console.error('❌ Error saat export PDF:', error);
+    alert(`Gagal export PDF: ${error.message}`);
   }
 });
 
@@ -440,6 +476,7 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
     
     if (!exportArea || !exportButtons) {
       console.error('Element tidak ditemukan');
+      alert('Elemen export tidak ditemukan!');
       return;
     }
     
@@ -463,8 +500,7 @@ document.getElementById('exportPNG')?.addEventListener('click', async () => {
     link.click();
     
   } catch (error) {
-    console.error('Error saat export PNG:', error);
-    alert('Gagal export PNG. Cek console untuk detail.');
+    console.error('❌ Error saat export PNG:', error);
+    alert(`Gagal export PNG: ${error.message}`);
   }
 });
-
