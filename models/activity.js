@@ -13,7 +13,7 @@ const activitySchema = new mongoose.Schema({
   },
   workTypes: [{
     type: String,
-    enum: ['Rutin', 'Non Rutin', 'Pihak Lain', 'Libur Nasional']
+    enum: ['Rutin', 'Non Rutin', 'Pihak Lain', 'Libur Nasional', 'Siaga NATARU']
   }],
   personnel: [{
     type: String,
