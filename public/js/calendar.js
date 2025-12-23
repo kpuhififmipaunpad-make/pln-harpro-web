@@ -124,9 +124,11 @@ function createDayCell(year, month, day, today) {
   segPihak.className = 'marker-seg marker-pihak';
   const segLibur = document.createElement('div');
   segLibur.className = 'marker-seg marker-libur';
+  const segSiaga = document.createElement('div');
+  segSiaga.className = 'marker-seg marker-siaga';
 
   // Gunakan append untuk performa lebih baik
-  markerStrip.append(segRutin, segNon, segPihak, segLibur);
+  markerStrip.append(segRutin, segNon, segPihak, segLibur, segSiaga);
 
   const descList = document.createElement('div');
   descList.className = 'day-desc-list';
@@ -149,6 +151,7 @@ function createDayCell(year, month, day, today) {
     segNon.style.opacity = allTypes.has('Non Rutin') ? '1' : '0';
     segPihak.style.opacity = allTypes.has('Pihak Lain') ? '1' : '0';
     segLibur.style.opacity = allTypes.has('Libur Nasional') ? '1' : '0';
+    segSiaga.style.opacity = allTypes.has('Siaga NATARU') ? '1' : '0';
 
     // deskripsi: ambil maksimal 2 activity
     const fragment = document.createDocumentFragment();
@@ -168,6 +171,7 @@ function createDayCell(year, month, day, today) {
       else if (types.includes('Non Rutin')) descItem.classList.add('day-desc-non');
       else if (types.includes('Pihak Lain')) descItem.classList.add('day-desc-pihak');
       else if (types.includes('Libur Nasional')) descItem.classList.add('day-desc-libur');
+      else if (types.includes('Siaga NATARU')) descItem.classList.add('day-desc-siaga');
 
       descItem.textContent = shortDesc;
       fragment.appendChild(descItem);
@@ -286,6 +290,7 @@ function showActivitiesForDate(date) {
             else if (type === 'Non Rutin') cls = 'nonrutin';
             else if (type === 'Pihak Lain') cls = 'pihaklain';
             else if (type === 'Libur Nasional') cls = 'libur';
+            else if (type === 'Siaga NATARU') cls = 'siaga';
             return `<span class="activity-worktype ${cls}">${type}</span>`;
           }).join('')}
         </div>
