@@ -660,6 +660,7 @@ body {
 .marker-non   { background: #eab308; }
 .marker-pihak { background: #0ea5e9; }
 .marker-libur { background: #ec4899; }
+.marker-siaga { background: #46006e; }
 
 .calendar-day.has-marker .marker-seg {
   opacity: 1;
