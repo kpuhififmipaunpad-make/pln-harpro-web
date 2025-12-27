@@ -863,6 +863,10 @@ body {
   border-left: 5px solid #ec4899;
 }
 
+.checkbox-label.work-siaga {
+  border-left: 5px solid #46006e;
+}
+
 /* efek selected mengikuti warna garis kiri */
 .checkbox-label.is-checked {
   background: #e0f2ff;
