@@ -9,7 +9,7 @@ const activitySchema = new mongoose.Schema({
   gi: {
     type: String,
     required: true,
-    enum: ['GISTET Saguling', 'GI Rajamandala', 'GI Cibabat Lama', 'GI Cibabat Baru', 'GI Bandung Utara', 'GI Kiaracondong', 'GI Braga', 'GI Cibereum', 'GI Dayeuhkolot', 'GI Sukaluyu', 'GI Padalarang', 'GI Panasia', 'GI Cianjur', 'GI Cigereleng']
+    enum: ['Semua GI','GISTET Saguling', 'GI Rajamandala', 'GI Cibabat Lama', 'GI Cibabat Baru', 'GI Bandung Utara', 'GI Kiaracondong', 'GI Braga', 'GI Cibereum', 'GI Dayeuhkolot', 'GI Sukaluyu', 'GI Padalarang', 'GI Panasia', 'GI Cianjur', 'GI Cigereleng']
   },
   workTypes: [{
     type: String,
